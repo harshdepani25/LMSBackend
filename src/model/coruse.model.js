@@ -3,7 +3,7 @@ const { default: mongoose, sanitizeFilter } = require("mongoose");
 const coruseSchema = new mongoose.Schema(
     {
         categories_id: {
-
+            
         },
         name: {
             type: String,
@@ -16,18 +16,20 @@ const coruseSchema = new mongoose.Schema(
         },
         fees: {
             type:Number,
+            required: true,
         },
         duration: {
             type:String,
+            required: true,
         },
         intrucotor_id: {
-
+            required: true,
         },
         images: {
-            type:
+            type: String
         },
         perview_url: {
-
+            type: String
         },
         is_active: {
             type: Boolean,
