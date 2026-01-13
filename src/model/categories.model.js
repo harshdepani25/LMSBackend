@@ -12,7 +12,8 @@ const categoriesSchema = new mongoose.Schema(
         type:String,
     },
     parent_id:{
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: "categories"
     },
     is_active:{
         type:Boolean,

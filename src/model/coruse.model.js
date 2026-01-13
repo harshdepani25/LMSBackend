@@ -3,7 +3,9 @@ const { default: mongoose, sanitizeFilter } = require("mongoose");
 const coruseSchema = new mongoose.Schema(
     {
         categories_id: {
-            
+            type: mongoose.Types.ObjectId,
+            ref: "categories",
+           required:true, 
         },
         name: {
             type: String,
@@ -23,6 +25,8 @@ const coruseSchema = new mongoose.Schema(
             required: true,
         },
         intrucotor_id: {
+            type: mongoose.Types.ObjectId,
+            ref:"user",
             required: true,
         },
         images: {

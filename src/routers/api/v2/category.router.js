@@ -1,28 +1,16 @@
 const express = require('express');
+const { categoriescontroller } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allcatgroy", (req, res) => {
-    res.status(200).json({Message : "All Categroy data fechted"})
-})
+routers.get("/allcatgroy", categoriescontroller.getAllCategories)
 
-routers.get("/catgroy", (req, res) => {
-    res.status(200).json({Message : "Categroy data fechted"})
-})
+routers.get("/catgroy/:id", categoriescontroller.getcategories)
 
-routers.post("/addcategory", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "Categroy data Added"})
-})
+routers.post("/addcategory",categoriescontroller.addcategories)
 
-routers.put("/updatecategory/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "Categroy data Upadted"})
-})
+routers.put("/updatecategory/:id", categoriescontroller.updatecategories)
 
-routers.delete("/deletecategory/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "Categroy data Deleted"})
-})
+routers.delete("/deletecategory/:id", categoriescontroller.deletcategories)
 
 module.exports = routers;
