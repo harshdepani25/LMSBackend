@@ -24,12 +24,12 @@ const coruseSchema = new mongoose.Schema(
             type:String,
             required: true,
         },
-        intrucotor_id: {
-            type: mongoose.Types.ObjectId,
-            ref:"user",
-            required: true,
-        },
-        images: {
+        // intrucotor_id: {
+        //     type: mongoose.Types.ObjectId,
+        //     ref:"user",
+        //     required: true,
+        // },
+        image: {
             type: String
         },
         perview_url: {

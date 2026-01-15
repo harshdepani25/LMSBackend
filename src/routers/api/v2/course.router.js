@@ -1,28 +1,16 @@
 const express = require('express');
+const { coursecontroller } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allcourse", (req, res) => {
-    res.status(200).json({Message : "All course data fechted"})
-})
+routers.get("/allcourse", coursecontroller.getAllCouser)
 
-routers.get("/course", (req, res) => {
-    res.status(200).json({Message : "course data fechted"})
-})
+routers.get("/course/:id", coursecontroller.getCouser)
 
-routers.post("/addcourse", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "course data Added"})
-})
+routers.post("/addcourse", coursecontroller.addCouser)
 
-routers.put("/updatecourse/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "course data Upadted"})
-})
+routers.put("/updatecourse/:id", coursecontroller.updateCouser)
 
-routers.delete("/deletecourse/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "course data Deleted"})
-})
+routers.delete("/deletecourse/:id", coursecontroller.deletCouser)
 
 module.exports = routers;
