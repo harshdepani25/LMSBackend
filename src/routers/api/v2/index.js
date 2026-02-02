@@ -20,6 +20,7 @@ const blog = require("./blog.router")
 const wishlist = require("./wishlist.router")
 const term = require("./term&condition.router")
 
+
 routers1.use("/category", category);
 routers1.use("/user", user);
 routers1.use("/review", review);
