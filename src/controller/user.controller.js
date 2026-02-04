@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const sendMail = require("../servicer/nodemailer");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
-const users = require("../model/user.model");
 
 const tokenGenrater = async (_id) => {
   try {
@@ -12,10 +11,10 @@ const tokenGenrater = async (_id) => {
     const user = await Users.findById(_id);
 
     const accessToken = jwt.sign(
-      { id: _id, expiresIn: "10m", role: user.role },
+      { id: _id, expiresIn: "1h", role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "10m",
+        expiresIn: "1h",
       },
     );
 
@@ -163,14 +162,23 @@ const login = async (req, res) => {
 
     console.log(accessToken, refreshToken);
     
-    res.cookie("refereshtoken", refreshToken, {
+    const accOPNT= {
       httpOnly: true,
       sameSite: "None",
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+      maxAge: 60 * 60 * 1000
+    }
+
+    const refOPNT= {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 7 * 60 * 60 * 1000 
+    }
 
     return res
+      .cookie("accessToken", accessToken, accOPNT)
+      .cookie("refereshtoken", refreshToken,refOPNT)
       .status(200)
       .json({
         sucess: true,
@@ -190,8 +198,111 @@ const login = async (req, res) => {
   }
 };
 
+const gereratenewToken = async (req, res) => {
+  try {
+    console.log(req.cookies.refereshtoken);
+    
+    const decoded = await jwt.verify(
+      req.cookies.refereshtoken,
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+
+    if (!decoded) {
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "Invalid Refresh Token" });
+    } 
+    
+    const user = await Users.findById(decoded.id);
+
+    if (user.refreshToken !== req.cookies.refereshtoken) {
+      return res
+        .status(404)
+        .json({ sucess: false, data: null, Message: "User Not Found." });
+    }
+
+    const { accessToken, refreshToken } = await tokenGenrater(user._id);
+
+    const accOPNT= {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 60 * 60 * 1000
+    }
+
+    const refOPNT= {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 7 * 60 * 60 * 1000 
+    }
+
+    return res
+      .cookie("accessToken", accessToken, accOPNT)
+      .cookie("refereshtoken", refreshToken,refOPNT)
+      .status(200)
+      .json({
+        sucess: true,
+        data: user,
+        Message: "New Access Token Generated Successfully.",
+      });
+  }
+  catch (error) {
+    return res
+      .status(500)
+      .json({
+        sucess: false,
+        data: null,
+        Message: "Internal Server Error :" + error,
+      });
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    const user = await Users.findByIdAndUpdate(
+      {_id},
+      {
+        $unset : {
+          refreshToken : 1
+        }
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "User Not logouted." });
+    }
+
+    return res
+      .clearCookie("accessToken")
+      .clearCookie("refereshtoken")
+      .status(200)
+      .json({
+        sucess: true,
+        data: null,
+        Message: "Logout Complete Sucessfully.",
+      });
+
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        sucess: false,
+        data: null,
+        Message: "Internal Server Error :" + error,
+      });
+  }
+}
+
 module.exports = {
   register,
   is_verify,
   login,
+  gereratenewToken,
+  logout
 };
