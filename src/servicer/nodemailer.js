@@ -9,13 +9,13 @@ const sendMail = async (email, subject, message) => {
         port: 587,
         secure: true,
         auth: {
-            user: 'harshdepani2509@gmail.com',
-            pass: 'bsgs ijfi qogp sqzd'
+            user: process.env.NODEMALIER_USER,
+            pass: process.env.NODEMALIER_PASS
         }
     });
 
     let mailOptions = {
-        from: 'harshdepani2509@gmail.com',
+        from: process.env.NODEMALIER_USER,
         to: email , 
         subject: subject,
         text: message

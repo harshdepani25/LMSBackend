@@ -1,104 +1,197 @@
 const Users = require("../model/user.model");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 const sendMail = require("../servicer/nodemailer");
-const jwt = require('jsonwebtoken')
-const bodyParser = require('body-parser');
+const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+const users = require("../model/user.model");
+
+const tokenGenrater = async (_id) => {
+  try {
+    console.log(_id);
+
+    const user = await Users.findById(_id);
+
+    const accessToken = jwt.sign(
+      { id: _id, expiresIn: "10m", role: user.role },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "10m",
+      },
+    );
+
+    const refreshToken = jwt.sign(
+      {
+        id: _id,
+        expiresIn: "7d",
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    user.refreshToken = refreshToken;
+
+    await user.save();
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 const register = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const hashPass = await bcrypt.hash(password, 10)
-        const OTP = Math.floor(100000 + Math.random() * 900000)
-        const userExites = await Users.findOne({ email })
-        const user = await Users.create({ ...req.body, password: hashPass, OTP: OTP });
+  try {
+    const { email, password } = req.body;
+    const hashPass = await bcrypt.hash(password, 10);
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+    const userExites = await Users.findOne({ email });
+    const user = await Users.create({
+      ...req.body,
+      password: hashPass,
+      OTP: OTP,
+    });
 
-        if (userExites) {
-            return res.status(400).json({ sucess: false, data: null, Message: "User Already Exites" })
-        }
-
-        sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
-
-        const userdata = await Users.findOne({ email }).select('-password -OTP')
-
-        if (!user) {
-            return res.status(400).json({ sucess: false, data: [], Message: "Users register not complete" })
-        }
-
-        return res.status(200).json({ sucess: true, data: userdata, Message: "Users register sucessfully." })
-
-    } catch (error) {
-        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
+    if (userExites) {
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "User Already Exites" });
     }
 
-}
+    sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
 
-const is_verify = async (req,res) => {
-    try {
-        const {email, OTP} = req.body;
-        
-        const userverify = await Users.findOne({email: email , OTP : OTP})
+    const userdata = await Users.findOne({ email }).select("-password -OTP");
 
-        if(!userverify){
-            return res.status(400).json({ sucess: false, data: null, Message: "Invaild Username/Email or OTP" })
-        }
-
-        userverify.is_verify = true;
-
-        userverify.save();
-
-        return res.status(200).json({ sucess: true, data: userverify, Message: "Users Verfivcation Complete." })
-        
-
-    } catch (error) {
-        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
+    if (!user) {
+      return res
+        .status(400)
+        .json({
+          sucess: false,
+          data: [],
+          Message: "Users register not complete",
+        });
     }
-}
+
+    return res
+      .status(200)
+      .json({
+        sucess: true,
+        data: userdata,
+        Message: "Users register sucessfully.",
+      });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        sucess: false,
+        data: null,
+        Message: "Internal Server Error :" + error,
+      });
+  }
+};
+
+const is_verify = async (req, res) => {
+  try {
+    const { email, OTP } = req.body;
+
+    const userverify = await Users.findOne({ email: email, OTP: OTP });
+
+    if (!userverify) {
+      return res
+        .status(400)
+        .json({
+          sucess: false,
+          data: null,
+          Message: "Invaild Username/Email or OTP",
+        });
+    }
+
+    userverify.is_verify = true;
+
+    userverify.save();
+
+    return res
+      .status(200)
+      .json({
+        sucess: true,
+        data: userverify,
+        Message: "Users Verfivcation Complete.",
+      });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        sucess: false,
+        data: null,
+        Message: "Internal Server Error :" + error,
+      });
+  }
+};
 
 const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-    const userExites = await Users.findOne({ email })
+    const userExites = await Users.findOne({ email });
 
     if (!userExites) {
-        return res.status(400).json({ sucess: false, data: null, Message: "User not Exites" })
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "User not Exites" });
     }
 
     const passisMatched = await bcrypt.compare(password, userExites.password);
     console.log(passisMatched);
 
-    if(!passisMatched){
-        return res.status(400).json({ sucess: false, data: null, Message: "Invaild Password or Username/Email" })
+    if (!passisMatched) {
+      return res
+        .status(400)
+        .json({
+          sucess: false,
+          data: null,
+          Message: "Invaild Password or Username/Email",
+        });
     }
 
-    const accessToken = jwt.sign({
-        email: userExites.email
-    }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '10m'
+    if (!userExites.is_verify) {
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "Verify Email." });
+    }
+
+    const { accessToken, refreshToken } = await tokenGenrater(userExites._id);
+
+    console.log(accessToken, refreshToken);
+    
+    res.cookie("refereshtoken", refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
-    const refreshToken = jwt.sign({
-        email: userExites.email,
-    }, process.env.REFRESH_TOKEN_SECRET, { 
-        expiresIn: '1d' });
+    return res
+      .status(200)
+      .json({
+        sucess: true,
+        data: Users,
+        Message: "Login Complete Sucessfully.",
+      });
 
-    res.cookie('LoginCookies', refreshToken, {
-        httpOnly: true,
-        sameSite: 'None', secure: true,
-        maxAge: 24 * 60 * 60 * 1000
-    }); 
 
-    // return res.status(200).json({ sucess: true, data: userExites, Message: "Users logined Complete." })
-    return res.json({ accessToken , refreshToken});
-
-    } catch (error) {
-        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
-    }
-
-}
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        sucess: false,
+        data: null,
+        Message: "Internal Server Error :" + error,
+      });
+  }
+};
 
 module.exports = {
-    register,
-    is_verify,
-    login
-}
+  register,
+  is_verify,
+  login,
+};

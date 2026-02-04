@@ -28,12 +28,19 @@ const usersSchema = new mongoose.Schema(
         trim:true,
         required:true,
     },
+    role : {
+        type : String,
+        default : "user"
+    },
     OTP : {
         type : Number
     },
     is_verify : {
         type : Boolean,
         default : false
+    },
+    refreshToken : {
+        type : String
     },
     is_active:{
         type:Boolean,
