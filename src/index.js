@@ -2,9 +2,16 @@ require('dotenv').config()
 const express = require('express');
 const app = express()
 const cookieParser = require('cookie-parser')
+const passport = require('passport');
+const GoogleProvider = require('./servicer/provider');
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+GoogleProvider();
 
 const routers1 = require('./routers/api/v2');
 const mongodb = require('./db/mongodb');

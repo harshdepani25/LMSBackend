@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const sendMail = require("../servicer/nodemailer");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
+const sendSMS = require("../servicer/twilio");
 
 const tokenGenrater = async (_id) => {
   try {
@@ -11,7 +12,7 @@ const tokenGenrater = async (_id) => {
     const user = await Users.findById(_id);
 
     const accessToken = jwt.sign(
-      { id: _id, expiresIn: "1h", role: user.role },
+      { _id: _id, expiresIn: "1h", role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "1h",
@@ -20,7 +21,7 @@ const tokenGenrater = async (_id) => {
 
     const refreshToken = jwt.sign(
       {
-        id: _id,
+        _id: _id,
         expiresIn: "7d",
       },
       process.env.REFRESH_TOKEN_SECRET,
@@ -41,10 +42,14 @@ const tokenGenrater = async (_id) => {
 
 const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password , phone_no} = req.body;
+
     const hashPass = await bcrypt.hash(password, 10);
+    
     const OTP = Math.floor(100000 + Math.random() * 900000);
+    
     const userExites = await Users.findOne({ email });
+    
     const user = await Users.create({
       ...req.body,
       password: hashPass,
@@ -57,7 +62,8 @@ const register = async (req, res) => {
         .json({ sucess: false, data: null, Message: "User Already Exites" });
     }
 
-    sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
+    // sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
+    sendSMS(phone_no, OTP)
 
     const userdata = await Users.findOne({ email }).select("-password -OTP");
 
@@ -161,24 +167,24 @@ const login = async (req, res) => {
     const { accessToken, refreshToken } = await tokenGenrater(userExites._id);
 
     console.log(accessToken, refreshToken);
-    
-    const accOPNT= {
+
+    const accOPNT = {
       httpOnly: true,
       sameSite: "None",
       secure: true,
       maxAge: 60 * 60 * 1000
     }
 
-    const refOPNT= {
+    const refOPNT = {
       httpOnly: true,
       sameSite: "None",
       secure: true,
-      maxAge: 24 * 7 * 60 * 60 * 1000 
+      maxAge: 24 * 7 * 60 * 60 * 1000
     }
 
     return res
       .cookie("accessToken", accessToken, accOPNT)
-      .cookie("refereshtoken", refreshToken,refOPNT)
+      .cookie("refereshtoken", refreshToken, refOPNT)
       .status(200)
       .json({
         sucess: true,
@@ -201,7 +207,7 @@ const login = async (req, res) => {
 const gereratenewToken = async (req, res) => {
   try {
     console.log(req.cookies.refereshtoken);
-    
+
     const decoded = await jwt.verify(
       req.cookies.refereshtoken,
       process.env.REFRESH_TOKEN_SECRET,
@@ -211,8 +217,8 @@ const gereratenewToken = async (req, res) => {
       return res
         .status(400)
         .json({ sucess: false, data: null, Message: "Invalid Refresh Token" });
-    } 
-    
+    }
+
     const user = await Users.findById(decoded.id);
 
     if (user.refreshToken !== req.cookies.refereshtoken) {
@@ -223,23 +229,23 @@ const gereratenewToken = async (req, res) => {
 
     const { accessToken, refreshToken } = await tokenGenrater(user._id);
 
-    const accOPNT= {
+    const accOPNT = {
       httpOnly: true,
       sameSite: "None",
       secure: true,
       maxAge: 60 * 60 * 1000
     }
 
-    const refOPNT= {
+    const refOPNT = {
       httpOnly: true,
       sameSite: "None",
       secure: true,
-      maxAge: 24 * 7 * 60 * 60 * 1000 
+      maxAge: 24 * 7 * 60 * 60 * 1000
     }
 
     return res
       .cookie("accessToken", accessToken, accOPNT)
-      .cookie("refereshtoken", refreshToken,refOPNT)
+      .cookie("refereshtoken", refreshToken, refOPNT)
       .status(200)
       .json({
         sucess: true,
@@ -263,10 +269,10 @@ const logout = async (req, res) => {
     const { _id } = req.body;
 
     const user = await Users.findByIdAndUpdate(
-      {_id},
+      { _id },
       {
-        $unset : {
-          refreshToken : 1
+        $unset: {
+          refreshToken: 1
         }
       },
       { new: true }
@@ -299,10 +305,66 @@ const logout = async (req, res) => {
   }
 }
 
+const checkAuth = async (req, res) => {
+  try {
+    const token =
+      req.cookies.accessToken ||
+      req.header("Authorization")?.replace("Bearer ", "");
+
+
+    if (!token) {
+      return res.status(404).json({
+        sucess: false,
+        data: [],
+        message: "Token not found",
+      });
+    }
+
+    const decode = await jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET,
+    );
+
+    if (!decode) {
+      return res.status(400).json({
+        sucess: false,
+        data: [],
+        message: "Invaild Token",
+      });
+    }
+
+    const user = await Users.findById(decode._id);
+
+    if (!user) {
+      return res.status(404).json({
+        sucess: false,
+        data: [],
+        message: "user not found",
+      });
+    }
+
+    return res.status(200).json({
+      sucess: true,
+      data: user,
+      message: "user authentication complet",
+    });
+
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        sucess: false,
+        data: null,
+        Message: "Internal Server Error :" + error,
+      });
+  }
+}
+
 module.exports = {
   register,
   is_verify,
   login,
   gereratenewToken,
-  logout
+  logout,
+  checkAuth
 };

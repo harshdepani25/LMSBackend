@@ -1,4 +1,5 @@
 const { default: mongoose, sanitizeFilter } = require("mongoose");
+const { TrustProductsEntityAssignmentsListInstance } = require("twilio/lib/rest/trusthub/v1/trustProducts/trustProductsEntityAssignments");
 
 const usersSchema = new mongoose.Schema(
     {
@@ -15,18 +16,18 @@ const usersSchema = new mongoose.Schema(
     },
     password : {
         type: String,
-        trim:true,
-        required:true,
+        trim:true
+    },
+    phone_no : {
+        type: String
     },
     dob : {
         type: String,
-        trim:true,
-        required:true,
+        trim:TrustProductsEntityAssignmentsListInstance
     },
     gender : {
         type: String,
-        trim:true,
-        required:true,
+        trim:true
     },
     role : {
         type : String,
@@ -34,6 +35,9 @@ const usersSchema = new mongoose.Schema(
     },
     OTP : {
         type : Number
+    },
+    googleID : {
+        type : String
     },
     is_verify : {
         type : Boolean,

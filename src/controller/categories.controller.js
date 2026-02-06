@@ -2,7 +2,7 @@ const Categories = require("../model/categories.model");
 
 const addcategories = async (req, res) => {
     try {
-        console.log(req.body);
+        console.log(req.body, req.user);
 
         const category = await Categories.create(req.body);
 
