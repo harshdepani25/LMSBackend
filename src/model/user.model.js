@@ -12,7 +12,7 @@ const usersSchema = new mongoose.Schema(
     email:{
         type: String,
         trim:true,
-        required:true,
+        // required:true,
     },
     password : {
         type: String,
@@ -37,6 +37,9 @@ const usersSchema = new mongoose.Schema(
         type : Number
     },
     googleID : {
+        type : String
+    },
+    facebookID : {
         type : String
     },
     is_verify : {

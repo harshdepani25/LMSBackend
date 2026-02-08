@@ -1,6 +1,7 @@
 const passport = require('passport');
 const users = require('../model/user.model');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 
 
 const GoogleProvider = () => {
@@ -13,11 +14,11 @@ const GoogleProvider = () => {
 
             async function (accessToken, refreshToken, profile, cb) {
                 console.log(profile);
-                
+
                 const user = await users.create({
-                    name : profile.displayName,
-                    email : profile.emails[0].value,
-                    googleID : profile.id
+                    name: profile.displayName,
+                    email: profile.emails[0].value,
+                    googleID: profile.id
                 })
 
                 //     User.findOrCreate({ googleId: profile.id }, function (err, user) {
@@ -30,4 +31,30 @@ const GoogleProvider = () => {
     }
 }
 
-module.exports = GoogleProvider;
+const FacebookProvider = () => {
+    passport.use(new FacebookStrategy({
+        clientID: process.env.FACEBOOK_APP_ID,
+        clientSecret: process.env.FACEBOOK_APP_SECRET,
+        callbackURL: "http://localhost:3030/api/v2/user/auth/facebook/callback"
+    },
+
+        async function (accessToken, refreshToken, profile, cb) {
+
+            console.log(profile);
+
+            const user = await users.create({
+                name: profile.displayName,
+                facebookID: profile.id
+            })
+
+            // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+            //     return cb(err, user);
+            // });
+        }
+    ));
+}
+
+module.exports = {
+    GoogleProvider,
+    FacebookProvider
+};

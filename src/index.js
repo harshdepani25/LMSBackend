@@ -11,7 +11,8 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 app.use(passport.initialize());
 app.use(passport.session());
 
-GoogleProvider();
+GoogleProvider;
+GoogleProvider.FacebookProvider();
 
 const routers1 = require('./routers/api/v2');
 const mongodb = require('./db/mongodb');
