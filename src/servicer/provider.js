@@ -15,18 +15,46 @@ const GoogleProvider = () => {
             async function (accessToken, refreshToken, profile, cb) {
                 console.log(profile);
 
-                const user = await users.create({
-                    name: profile.displayName,
-                    email: profile.emails[0].value,
-                    googleID: profile.id
-                })
+                const userData = await users.findOne({email: profile.emails[0].value});
 
-                //     User.findOrCreate({ googleId: profile.id }, function (err, user) {
-                //         return cb(err, user);
-                //     });
+                if (!userData) {
+                    const user = await users.create({
+                        name: profile.displayName,
+                        email: profile.emails[0].value,
+                        googleID: profile.id,
+                        is_verify : true
+                    })
+
+                    return cb(null, user);
+                }
+
+                return cb(null, userData);
+
             }
         ));
+
+        passport.serializeUser(function (user, done) {
+            console.log("ssss", user)
+            done(null, user._id);
+        });
+
+        passport.deserializeUser(async function (_id, done) {
+            console.log("dddd", _id);
+            
+            const usersD =  await users.findById(_id);
+
+            console.log("uuuu", usersD);
+            
+
+            if(usersD){
+                done(null, usersD);
+            } else {
+                done('user not found.' , null)
+            }
+            
+        });
     } catch (error) {
+        console.log(error);
 
     }
 }

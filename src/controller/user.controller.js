@@ -366,5 +366,6 @@ module.exports = {
   login,
   gereratenewToken,
   logout,
-  checkAuth
+  checkAuth,
+  tokenGenrater
 };

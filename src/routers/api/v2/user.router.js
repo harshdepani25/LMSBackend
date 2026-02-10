@@ -1,6 +1,8 @@
 const express = require('express');
 const { userscontroller } = require('../../../controller');
 const passport = require('passport');
+const { tokenGenrater } = require('../../../controller/user.controller');
+const creatPdf = require('../../../servicer/pdfMake');
 const routers = express.Router()
 
 routers.post("/register", userscontroller.register)
@@ -12,25 +14,58 @@ routers.get("/checkAuth", userscontroller.checkAuth)
 
 
 routers.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile' , 'email'] }));
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-routers.get('/auth/google/callback', 
+routers.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
+  async function (req, res) {
+    console.log("CallBack", req.user);
+
+    const { accessToken, refreshToken } = await tokenGenrater(req.user._id);
+
+    console.log(accessToken, refreshToken);
+
+    const accOPNT = {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 60 * 60 * 1000
+    }
+
+    const refOPNT = {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 7 * 60 * 60 * 1000
+    }
+
+    return res
+      .cookie("accessToken", accessToken, accOPNT)
+      .cookie("refereshtoken", refreshToken, refOPNT)
+      .status(200)
+      .json({
+        sucess: true,
+        data: req.user,
+        Message: "Login Complete Sucessfully.",
+      });
+
+
   });
 
 
-  
+
 routers.get('/auth/facebook',
   passport.authenticate('facebook'));
 
 routers.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
+  function (req, res) {
+
     // Successful authentication, redirect home.
     res.redirect('/');
   });
+
+
+routers.get("/creatPdf", creatPdf);
 
 module.exports = routers;
