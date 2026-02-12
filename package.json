@@ -26,6 +26,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pdfmake": "^0.3.3",
     "serve-static": "^2.2.1",
+    "socket.io": "^4.8.3",
     "twilio": "^5.12.1"
   }
 }

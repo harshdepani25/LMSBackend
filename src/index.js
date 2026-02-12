@@ -4,6 +4,7 @@ const app = express()
 const cookieParser = require('cookie-parser')
 const passport = require('passport');
 const GoogleProvider = require('./servicer/provider');
+const createSocketIO = require('./servicer/socketIO');
 
 app.use(express.json())
 app.use(cookieParser())
@@ -13,6 +14,7 @@ app.use(passport.session());
 
 GoogleProvider.GoogleProvider();
 // GoogleProvider.FacebookProvider();
+createSocketIO();
 
 const routers1 = require('./routers/api/v2');
 const mongodb = require('./db/mongodb');
