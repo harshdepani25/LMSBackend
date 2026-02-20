@@ -11,7 +11,8 @@ routers.post("/is_verify", userscontroller.is_verify)
 routers.post("/gereratenewToken", userscontroller.gereratenewToken)
 routers.post("/logout", userscontroller.logout)
 routers.get("/checkAuth", userscontroller.checkAuth)
-
+routers.post("/forgot", userscontroller.ForgotPass)
+routers.post("/reset", userscontroller.ResetPass)
 
 routers.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -43,13 +44,7 @@ routers.get('/auth/google/callback',
       .cookie("accessToken", accessToken, accOPNT)
       .cookie("refereshtoken", refreshToken, refOPNT)
       .status(200)
-      .json({
-        sucess: true,
-        data: req.user,
-        Message: "Login Complete Sucessfully.",
-      });
-
-
+      .redirect("http://localhost:5173/")
   });
 
 
@@ -59,10 +54,31 @@ routers.get('/auth/facebook',
 
 routers.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function (req, res) {
+  async function (req, res) {
 
-    // Successful authentication, redirect home.
-    res.redirect('/');
+    const { accessToken, refreshToken } = await tokenGenrater(req.user._id);
+
+    console.log(accessToken, refreshToken);
+
+    const accOPNT = {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 60 * 60 * 1000
+    }
+
+    const refOPNT = {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 7 * 60 * 60 * 1000
+    }
+
+    return res
+      .cookie("accessToken", accessToken, accOPNT)
+      .cookie("refereshtoken", refreshToken, refOPNT)
+      .status(200)
+      .redirect("http://localhost:5173/")
   });
 
 

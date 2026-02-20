@@ -22,11 +22,11 @@ const tokenGenrater = async (_id) => {
     const refreshToken = jwt.sign(
       {
         _id: _id,
-        expiresIn: "7d",
+        expiresIn: "30d",
       },
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "7d",
+        expiresIn: "30d",
       },
     );
 
@@ -42,14 +42,14 @@ const tokenGenrater = async (_id) => {
 
 const register = async (req, res) => {
   try {
-    const { email, password , phone_no} = req.body;
+    const { email, password, phone_no } = req.body;
 
     const hashPass = await bcrypt.hash(password, 10);
-    
+
     const OTP = Math.floor(100000 + Math.random() * 900000);
-    
+
     const userExites = await Users.findOne({ email });
-    
+
     const user = await Users.create({
       ...req.body,
       password: hashPass,
@@ -62,8 +62,8 @@ const register = async (req, res) => {
         .json({ sucess: false, data: null, Message: "User Already Exites" });
     }
 
-    // sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
-    sendSMS(phone_no, OTP)
+    sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
+    // sendSMS(phone_no, OTP)
 
     const userdata = await Users.findOne({ email }).select("-password -OTP");
 
@@ -184,12 +184,12 @@ const login = async (req, res) => {
 
     return res
       .cookie("accessToken", accessToken, accOPNT)
-      .cookie("refereshtoken", refreshToken, refOPNT)
+      .cookie("refreshToken", refreshToken, refOPNT)
       .status(200)
       .json({
         sucess: true,
-        data: Users,
-        Message: "Login Complete Sucessfully.",
+        data: userExites,
+        Message: "Login Sucessfully.",
       });
 
 
@@ -206,12 +206,15 @@ const login = async (req, res) => {
 
 const gereratenewToken = async (req, res) => {
   try {
-    console.log(req.cookies.refereshtoken);
+    console.log(req.cookies.refreshToken);
 
     const decoded = await jwt.verify(
-      req.cookies.refereshtoken,
+      req.cookies.refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
     );
+
+    console.log(decoded);
+
 
     if (!decoded) {
       return res
@@ -219,15 +222,19 @@ const gereratenewToken = async (req, res) => {
         .json({ sucess: false, data: null, Message: "Invalid Refresh Token" });
     }
 
-    const user = await Users.findById(decoded.id);
+    const user = await Users.findById(decoded._id);
 
-    if (user.refreshToken !== req.cookies.refereshtoken) {
+    console.log(user);
+
+    if (user.refreshToken !== req.cookies.refreshToken) {
       return res
         .status(404)
         .json({ sucess: false, data: null, Message: "User Not Found." });
     }
 
     const { accessToken, refreshToken } = await tokenGenrater(user._id);
+
+    console.log("acc, re", accessToken, refreshToken);
 
     const accOPNT = {
       httpOnly: true,
@@ -245,7 +252,7 @@ const gereratenewToken = async (req, res) => {
 
     return res
       .cookie("accessToken", accessToken, accOPNT)
-      .cookie("refereshtoken", refreshToken, refOPNT)
+      .cookie("refreshToken", refreshToken, refOPNT)
       .status(200)
       .json({
         sucess: true,
@@ -268,6 +275,8 @@ const logout = async (req, res) => {
   try {
     const { _id } = req.body;
 
+    console.log("idddddd:", _id);
+
     const user = await Users.findByIdAndUpdate(
       { _id },
       {
@@ -286,12 +295,12 @@ const logout = async (req, res) => {
 
     return res
       .clearCookie("accessToken")
-      .clearCookie("refereshtoken")
+      .clearCookie("refreshToken")
       .status(200)
       .json({
         sucess: true,
         data: null,
-        Message: "Logout Complete Sucessfully.",
+        Message: "Logout Sucessfully.",
       });
 
   } catch (error) {
@@ -313,10 +322,10 @@ const checkAuth = async (req, res) => {
 
 
     if (!token) {
-      return res.status(404).json({
+      return res.status(401).json({
         sucess: false,
         data: [],
-        message: "Token not found",
+        Message: "User Logout",
       });
     }
 
@@ -329,7 +338,7 @@ const checkAuth = async (req, res) => {
       return res.status(400).json({
         sucess: false,
         data: [],
-        message: "Invaild Token",
+        Message: "Invaild Token",
       });
     }
 
@@ -339,14 +348,14 @@ const checkAuth = async (req, res) => {
       return res.status(404).json({
         sucess: false,
         data: [],
-        message: "user not found",
+        Message: "user not found",
       });
     }
 
     return res.status(200).json({
       sucess: true,
       data: user,
-      message: "user authentication complet",
+      Message: "user authentication complet",
     });
 
   } catch (error) {
@@ -360,6 +369,64 @@ const checkAuth = async (req, res) => {
   }
 }
 
+const ForgotPass = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const userExites = await Users.findOne({ email });
+
+    if (!userExites) {
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "User not Exites" });
+    }
+
+    const OTP = Math.floor(100000 + Math.random() * 900000);
+
+    sendMail(email, "Register OTP ", "Your OTP is : " + OTP);
+
+    userExites.OTP = OTP;
+
+    await userExites.save();
+
+    return res
+      .status(200)
+      .json({ sucess: true, data: userExites, Message: "OTP send Sucessfully" });
+
+  } catch (error) {
+    console.log(error);
+
+  }
+}
+
+const ResetPass = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await Users.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ sucess: false, data: null, Message: "User not Exites" });
+    }
+
+    const hashPass = await bcrypt.hash(password, 10);
+
+    user.password = hashPass;
+
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ sucess: true, data: user, Message: "Password Change Sucessfully" });
+  } catch (error) {
+    console.log(error);
+
+  }
+}
+
+
 module.exports = {
   register,
   is_verify,
@@ -367,5 +434,7 @@ module.exports = {
   gereratenewToken,
   logout,
   checkAuth,
-  tokenGenrater
+  tokenGenrater,
+  ForgotPass,
+  ResetPass
 };

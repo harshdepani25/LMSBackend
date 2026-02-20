@@ -5,6 +5,15 @@ const cookieParser = require('cookie-parser')
 const passport = require('passport');
 const GoogleProvider = require('./servicer/provider');
 const createSocketIO = require('./servicer/socketIO');
+const cors = require('cors')
+
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    optionsSuccessStatus: 200,
+    credentials: true
+}))
+
 
 app.use(express.json())
 app.use(cookieParser())
