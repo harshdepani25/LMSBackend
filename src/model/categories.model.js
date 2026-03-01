@@ -13,7 +13,15 @@ const categoriesSchema = new mongoose.Schema(
     },
     parent_id:{
         type: mongoose.Types.ObjectId,
-        ref: "categories"
+        ref: "categories",
+        default: null
+    },
+    poster : {
+        type : {
+            public_id : String,
+            url : String
+        }, 
+        require : true
     },
     is_active:{
         type:Boolean,

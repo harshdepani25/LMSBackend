@@ -26,6 +26,7 @@ GoogleProvider.GoogleProvider();
 createSocketIO();
 
 const routers1 = require('./routers/api/v2');
+
 const mongodb = require('./db/mongodb');
 app.use("/api/v2", routers1);
 

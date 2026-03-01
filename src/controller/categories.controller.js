@@ -14,7 +14,6 @@ const addcategories = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
     }
-
 }
 
 const getAllCategories = async (req, res) => {
@@ -29,8 +28,6 @@ const getAllCategories = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
     }
-
-
 }
 
 const getcategories = async (req, res) => {
