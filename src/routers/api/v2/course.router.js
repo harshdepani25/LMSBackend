@@ -1,15 +1,16 @@
 const express = require('express');
 const { coursecontroller } = require('../../../controller');
-const routers = express.Router()
+const routers = express.Router();
+const upload = require('../../../middleware/upload');
 
 
 routers.get("/allcourse", coursecontroller.getAllCouser)
 
-routers.get("/course/:id", coursecontroller.getCouser)
+routers.get("/getcourse/:id", coursecontroller.getCouser)
 
-routers.post("/addcourse", coursecontroller.addCouser)
+routers.post("/addcourse", upload.single('course_img')  , coursecontroller.addCouser)
 
-routers.put("/updatecourse/:id", coursecontroller.updateCouser)
+routers.put("/updatecourse/:id", upload.single('course_img'), coursecontroller.updateCouser)
 
 routers.delete("/deletecourse/:id", coursecontroller.deletCouser)
 

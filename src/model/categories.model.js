@@ -16,11 +16,8 @@ const categoriesSchema = new mongoose.Schema(
         ref: "categories",
         default: null
     },
-    poster : {
-        type : {
-            public_id : String,
-            url : String
-        }, 
+    category_img : {
+        type: String, 
         require : true
     },
     is_active:{

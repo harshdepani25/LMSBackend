@@ -1,11 +1,27 @@
-import { error } from "console"
 
-const multer = require("multer")
-const path = require('path')
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// const multer = require("multer")
+// const path = require('path')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './public/temp')
+
+        console.log(file);
+        
+        const filePath = path.join("public","Images", file.fieldname);
+
+        console.log(filePath);
+        
+        fs.mkdir(filePath, (error) => {
+            console.log(error);
+            
+        })
+
+
+        cb(null, filePath)
     },
     filename: function (req, file, cb) {
 
@@ -20,6 +36,6 @@ const storage = multer.diskStorage({
     }
 })
 
-export const upload = multer({ storage: storage })
+const upload = multer({ storage: storage })
 
 module.exports = upload

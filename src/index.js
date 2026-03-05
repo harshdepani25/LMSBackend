@@ -15,6 +15,10 @@ app.use(cors({
 }))
 
 
+app.use('/public', express.static('public'))
+
+
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));

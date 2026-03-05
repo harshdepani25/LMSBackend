@@ -1,10 +1,12 @@
+const fs = require('fs');
 const Coruse = require("../model/coruse.model");
 
 const addCouser = async (req, res) => {
     try {
         console.log(req.body);
 
-        const coruse = await Coruse.create(req.body);
+        const coruse = await Coruse.create({ ...req.body, course_img: req.file.path });
+        // const coruse = await Coruse.create(req.body);
 
         if (!coruse) {
             return res.status(400).json({ sucess: false, data: null, Message: "Couser not added" })
@@ -42,22 +44,40 @@ const getCouser = async (req, res) => {
         }
 
         return res.status(200).json({ sucess: true, data: coruse, Message: "Couser data fetched." })
-        
+
     } catch (error) {
-         return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
+        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
     }
 
 }
 
 const updateCouser = async (req, res) => {
     try {
+
+        let uData = { ...req.body }
+
+        const courseData = await Coruse.findById(req.params.id);
+
+        if (req.file) {
+            fs.unlink(courseData.course_img, (error) => {
+                console.log(error);
+            })
+
+            uData.course_img = req.file.path
+        }
+
+        console.log(uData);
+
+
+
         const coruse = await Coruse.findByIdAndUpdate(
             req.params.id,
-            req.body,
-            {new:true, runValidators:true}
+            uData,
+            { new: true, runValidators: true }
         )
 
-         if (!coruse) {
+
+        if (!coruse) {
             return res.status(400).json({ sucess: false, data: [], Message: "Couser data not updated." })
         }
 
@@ -70,6 +90,11 @@ const updateCouser = async (req, res) => {
 const deletCouser = async (req, res) => {
     try {
         const coruse = await Coruse.findByIdAndDelete(req.params.id);
+
+        fs.unlink(coruse.course_img, (error) => {
+            console.log(error);
+
+        })
 
         if (!coruse) {
             return res.status(400).json({ sucess: false, data: [], Message: "Couser data not deleted." })

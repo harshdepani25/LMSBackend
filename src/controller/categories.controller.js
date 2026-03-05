@@ -1,10 +1,13 @@
 const Categories = require("../model/categories.model");
+const fs = require("fs")
 
 const addcategories = async (req, res) => {
     try {
-        console.log(req.body, req.user);
+        console.log(req.body, req.user, req.file);
 
-        const category = await Categories.create(req.body);
+        const category = await Categories.create({...req.body, category_img: req.file.path});
+
+        // const category = await Categories.create(req.body);
 
         if (!category) {
             return res.status(400).json({ sucess: false, data: null, Message: "Categroy not added" })
@@ -30,6 +33,7 @@ const getAllCategories = async (req, res) => {
     }
 }
 
+
 const getcategories = async (req, res) => {
     try {
         const category = await Categories.findById(req.params.id);
@@ -46,11 +50,29 @@ const getcategories = async (req, res) => {
 
 }
 
+//fs.unlink
 const updatecategories = async (req, res) => {
     try {
+
+        let uData = {...req.body}
+
+        const categoryData = await Categories.findById(req.params.id);
+
+        if (req.file) {
+            fs.unlink(categoryData.category_img, (error) => {
+                console.log(error);
+            })
+
+            uData.category_img = req.file.path
+        }
+
+        console.log(uData);
+        
+
+
         const category = await Categories.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            uData,
             {new:true, runValidators:true}
         )
 
@@ -64,10 +86,16 @@ const updatecategories = async (req, res) => {
     }
 }
 
+//fs.unlink
 const deletcategories = async (req, res) => {
     try {
         const category = await Categories.findByIdAndDelete(req.params.id);
-
+        console.log(category);
+        
+        fs.unlink(category.category_img, (error)=>{
+            console.log(error);
+            
+        })
         if (!category) {
             return res.status(400).json({ sucess: false, data: [], Message: "Categroy data not deleted." })
         }
