@@ -106,10 +106,37 @@ const deletCouser = async (req, res) => {
     }
 }
 
+const updateCouserStauts = async (req, res) => {
+    try {
+
+        let uData = { ...req.body }
+
+        const courseData = await Coruse.findById(req.params.id);
+
+        console.log(uData);
+
+        const coruse = await Coruse.findByIdAndUpdate(
+            req.params.id,
+            uData,
+            { new: true, runValidators: true }
+        )
+
+
+        if (!coruse) {
+            return res.status(400).json({ sucess: false, data: [], Message: "Couser stauts not updated." })
+        }
+
+        return res.status(200).json({ sucess: true, data: coruse, Message: "Couser stauts updated." })
+    } catch (error) {
+        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
+    }
+}
+
 module.exports = {
     addCouser,
     getAllCouser,
     getCouser,
     updateCouser,
-    deletCouser
+    deletCouser,
+    updateCouserStauts
 }
