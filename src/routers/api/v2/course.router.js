@@ -14,7 +14,7 @@ routers.put("/updatecourse/:id", upload.single('course_img'), coursecontroller.u
 
 routers.delete("/deletecourse/:id", coursecontroller.deletCouser)
 
-routers.put("/updateCouserStauts/:id", upload.single('course_img'), coursecontroller.updateCouserStauts )
+routers.put("/updateCouserStauts/:id", coursecontroller.updateCouserStauts )
 
 module.exports = routers;
 
