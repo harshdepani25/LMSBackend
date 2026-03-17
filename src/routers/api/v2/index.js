@@ -18,7 +18,7 @@ const result = require("./result.router")
 const card = require("./card.router")
 const blog = require("./blog.router")
 const wishlist = require("./wishlist.router")
-const term = require("./term&condition.router")
+const terms = require("./terms.router")
 
 
 routers1.use("/category", category);
@@ -38,7 +38,7 @@ routers1.use("/result", result);
 routers1.use("/card", card);
 routers1.use("/blog", blog);
 routers1.use("/wishlist", wishlist);
-routers1.use("/term&condtion", term);
+routers1.use("/terms", terms);
 
 
 module.exports = routers1
