@@ -91,13 +91,14 @@ const getTerms = async (req, res) => {
 const updateTerms = async (req, res) => {
     try {
         const{name, description} = req.body;
+        const termsId = req.params.id
 
         const [rows] = await pool.query(
-            `UPDATE terms SET name=?, description=? WHERE id=${req.params.id}`,
+            `UPDATE terms SET name=?, description=? WHERE id=${termsId}`,
             [name, description]        
         )
 
-        const [result] = await pool.query(`SELECT * FROM terms WHERE id=${req.params.id}`)
+        
 
         if (!rows) {
             res.status(404).json({
@@ -109,7 +110,7 @@ const updateTerms = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result[0],
+            data: {name, description, termsId},
             message: "Data updeated successfully"
         })
     } catch (error) {
