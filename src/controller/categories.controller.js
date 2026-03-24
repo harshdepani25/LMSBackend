@@ -1,9 +1,12 @@
 const Categories = require("../model/categories.model");
-const fs = require("fs")
+const fs = require("fs");
+const { uploadcloudinary } = require("../servicer/cloudinary");
 
 const addcategories = async (req, res) => {
     try {
         console.log(req.body, req.user, req.file);
+
+        uploadcloudinary(req.file.path, 'Categroy')
 
         const category = await Categories.create({...req.body, category_img: req.file.path});
 
