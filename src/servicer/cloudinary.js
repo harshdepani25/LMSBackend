@@ -12,13 +12,17 @@ const uploadcloudinary = async (file, folder) => {
             .upload(
                 file, {
                 public_id: 'shoes',
-                folder:folder
+                folder: folder
             }
             )
             .catch((error) => {
                 console.log(error);
             });
 
+        return {
+            public_id: uploadResult.public_id,
+            url: uploadResult.url
+        }
     } catch (error) {
         console.log(error);
 
