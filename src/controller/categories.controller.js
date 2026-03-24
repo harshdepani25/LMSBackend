@@ -24,10 +24,10 @@ const getAllCategories = async (req, res) => {
         const category = await Categories.find();
 
         if (!category) {
-            return res.status(400).json({ sucess: false, data: [], Message: "Categroy data found." })
+            return res.status(400).json({ sucess: false, data: [], Message: "All Categroy data found." })
         }
 
-        return res.status(200).json({ sucess: true, data: category, Message: "Categroy data." })
+        return res.status(200).json({ sucess: true, data:category, Message: "All Categroy data." })
     } catch (error) {
         return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
     }
