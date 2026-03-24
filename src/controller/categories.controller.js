@@ -22,7 +22,7 @@ const addcategories = async (req, res) => {
 const getAllCategories = async (req, res) => {
     try {
         const category = await Categories.find();
-        console.log("All cat:", category);
+        console.log("All cat:", category); 
         
         if (!category) {
             return res.status(400).json({ sucess: false, data: [], Message: "All Categroy data found." })
