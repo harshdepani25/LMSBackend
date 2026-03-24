@@ -24,10 +24,10 @@ const getAllCouser = async (req, res) => {
         const coruse = await Coruse.find();
 
         if (!coruse) {
-            return res.status(400).json({ sucess: false, data: [], Message: "Couser data not updated." })
+            return res.status(400).json({ sucess: false, data: [], Message: "Couser data not feached." })
         }
 
-        return res.status(200).json({ sucess: true, data: coruse, Message: "Couser data updated." })
+        return res.status(200).json({ sucess: true, data: coruse, Message: "Couser data feached." })
     } catch (error) {
         return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
     }
