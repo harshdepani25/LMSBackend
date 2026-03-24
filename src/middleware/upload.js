@@ -11,10 +11,10 @@ const storage = multer.diskStorage({
 
         console.log(filePath);
 
-        fs.mkdir(filePath, (error) => {
-            console.log(error);
+        // fs.mkdir(filePath, (error) => {
+        //     console.log(error);
 
-        })
+        // })
 
 
         // cb(null, filePath)
