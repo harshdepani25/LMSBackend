@@ -15,7 +15,7 @@ const addcategories = async (req, res) => {
             });
 
         // const category = await Categories.create(req.body);
-
+ 
         if (!category) {
             return res.status(400).json({ sucess: false, data: null, Message: "Categroy not added" })
         }
