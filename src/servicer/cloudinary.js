@@ -30,10 +30,19 @@ const uploadcloudinary = async (file, folder) => {
     }
 }
 
-const deletecloudinary = async () => {
+const deletecloudinary = async (public_id) => {
+    try {
+        const result = await cloudinary.uploader
+            .destroy(public_id)
+            .then(result => console.log(result));
+
+
+    }
+    catch (error) {
+
+    }
 
 }
-
 module.exports = {
     uploadcloudinary,
     deletecloudinary
