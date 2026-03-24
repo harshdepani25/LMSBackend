@@ -11,4 +11,4 @@ const MongoDB = async () => {
     }
 }
 
-module.exports= MongoDB;
+module.exports=MongoDB;

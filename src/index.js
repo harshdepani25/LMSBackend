@@ -7,13 +7,11 @@ const GoogleProvider = require('./servicer/provider');
 const createSocketIO = require('./servicer/socketIO');
 const cors = require('cors')
 
-
 app.use(cors({
     origin: 'http://localhost:5173',
     optionsSuccessStatus: 200,
     credentials: true
 }))
-
 
 app.use('/public', express.static('public'))
 
@@ -34,6 +32,13 @@ app.use("/api/v2", routers1);
 
 mongodb();
 
-app.listen(process.env.PORT, () => {
-    console.log("Server Started at 3030");
-})
+app.get("/", (req, res) => {
+    res.send("Welcome IN LMS Backend")
+}
+)
+
+// app.listen(process.env.PORT, () => {
+//     console.log("Server Started at 3030");
+// })
+
+module.exports = app;
