@@ -18,6 +18,7 @@ const uploadcloudinary = async (file, folder) => {
             .catch((error) => {
                 console.log(error);
             });
+        console.log(uploadResult);
 
         return {
             public_id: uploadResult.public_id,
