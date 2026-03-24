@@ -10,24 +10,25 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
 
         console.log(file);
-        
-        const filePath = path.join("public","Images", file.fieldname);
+
+        const filePath = path.join("public", "Images", file.fieldname);
 
         console.log(filePath);
-        
+
         fs.mkdir(filePath, (error) => {
             console.log(error);
-            
+
         })
 
 
-        cb(null, filePath)
+        // cb(null, filePath)
+        cb(null, "/tmp")
     },
     filename: function (req, file, cb) {
 
         const ext = path.extname(file.originalname).toLowerCase();
 
-        if(ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg'){
+        if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg') {
             throw new Error("Please upload .png, .jpg, .jpeg, or .svg file ")
         }
 
