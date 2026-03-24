@@ -6,7 +6,7 @@ const addcategories = async (req, res) => {
     try {
         console.log(req.body, req.user, req.file);
 
-        uploadcloudinary(req.file.path, 'Categroy')
+        await uploadcloudinary(req.file.path, 'Categroy')
 
         const category = await Categories.create({...req.body, category_img: req.file.path});
 
