@@ -24,9 +24,9 @@ const storage = multer.diskStorage({
 
         const ext = path.extname(file.originalname).toLowerCase();
 
-        if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg') {
-            throw new Error("Please upload .png, .jpg, .jpeg, or .svg file ")
-        }
+        // if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg') {
+        //     throw new Error("Please upload .png, .jpg, .jpeg, or .svg file ")
+        // }
 
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         cb(null, file.fieldname + '-' + uniqueSuffix + ext)
