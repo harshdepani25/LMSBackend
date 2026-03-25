@@ -15,7 +15,7 @@ const addcategories = async (req, res) => {
             });
 
         // const category = await Categories.create(req.body);
- 
+
         if (!category) {
             return res.status(400).json({ sucess: false, data: null, Message: "Categroy not added" })
         }
@@ -67,11 +67,15 @@ const updatecategories = async (req, res) => {
         const categoryData = await Categories.findById(req.params.id);
 
         if (req.file) {
-            fs.unlink(categoryData.category_img, (error) => {
-                console.log(error);
-            })
+            // fs.unlink(categoryData.category_img, (error) => {
+            //     console.log(error);
+            // })
 
-            uData.category_img = req.file.path
+            await deletecloudinary(categoryData?.category_img?.public_id);
+
+            const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
+
+            uData.category_img = { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }
         }
 
         console.log(uData);
@@ -105,7 +109,7 @@ const deletcategories = async (req, res) => {
 
         // })
 
-        await deletecloudinary(category.category_img.public_id);
+        await deletecloudinary(category?.category_img?.public_id);
 
         if (!category) {
             return res.status(400).json({ sucess: false, data: [], Message: "Categroy data not deleted." })
