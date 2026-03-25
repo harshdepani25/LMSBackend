@@ -58,7 +58,7 @@ routers.get('/auth/facebook/callback',
 
     const { accessToken, refreshToken } = await tokenGenrater(req.user._id);
 
-    console.log(accessToken, refreshToken);
+    console.log(accessToken, refreshToken); 
 
     const accOPNT = {
       httpOnly: true,
@@ -76,7 +76,7 @@ routers.get('/auth/facebook/callback',
 
     return res
       .cookie("accessToken", accessToken, accOPNT)
-      .cookie("refereshtoken", refreshToken, refOPNT)
+      .cookie("refereshtoken", refreshToken, refOPNT)       
       .status(200)
       .redirect("https://lms-frontend-ten-steel.vercel.app")
   });
