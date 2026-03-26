@@ -61,10 +61,10 @@ const getcategories = async (req, res) => {
 //fs.unlink
 const updatecategories = async (req, res) => {
     try {
-
-        let uData = { ...req.body }
-
         const categoryData = await Categories.findById(req.params.id);
+
+        let uData = { ...req.body, category_img: { public_id: categoryData.category_img.public_id, url: categoryData.category_img.url } }
+
 
         if (req.file) {
             // fs.unlink(categoryData.category_img, (error) => {
@@ -79,8 +79,6 @@ const updatecategories = async (req, res) => {
         }
 
         console.log(uData);
-
-
 
         const category = await Categories.findByIdAndUpdate(
             req.params.id,
