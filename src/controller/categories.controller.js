@@ -92,7 +92,7 @@ const updatecategories = async (req, res) => {
 
         return res.status(200).json({ sucess: true, data: category, Message: "Categroy data updated." })
     } catch (error) {
-        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error })
+        return res.status(500).json({ sucess: false, data: null, Message: "Internal Server Error :" + error.message })
     }
 }
 
