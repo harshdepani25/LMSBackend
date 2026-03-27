@@ -8,8 +8,8 @@ const createSocketIO = require('./servicer/socketIO');
 const cors = require('cors')
 
 app.use(cors({
-    // origin: 'https:///lms-frontend-ten-steel.vercel.app',
-    origin:"http://localhost:5173",
+    origin: 'https:///lms-frontend-ten-steel.vercel.app',
+    // origin:"http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true
 }))     
@@ -38,8 +38,8 @@ app.get("/", (req, res) => {
 }
 )
 
-app.listen(process.env.PORT, () => { 
-    console.log("Server Started at 3030");
-})
+// app.listen(process.env.PORT, () => { 
+//     console.log("Server Started at 3030");
+// })
 
-// module.exports = app;
+module.exports = app;
