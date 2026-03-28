@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Coruse = require("../model/coruse.model");
-const { uploadcloudinary } = require('../servicer/cloudinary');
+const { uploadcloudinary, deletecloudinary } = require('../servicer/cloudinary');
 
 const addCouser = async (req, res) => {
     try {
@@ -93,10 +93,12 @@ const deletCouser = async (req, res) => {
     try {
         const coruse = await Coruse.findByIdAndDelete(req.params.id);
 
-        fs.unlink(coruse.course_img, (error) => {
-            console.log(error);
+        // fs.unlink(coruse.course_img, (error) => {
+        //     console.log(error);
 
-        })
+        // })
+
+        await deletecloudinary(coruse?.course_img?.public_id);
 
         if (!coruse) {
             return res.status(400).json({ sucess: false, data: [], Message: "Couser data not deleted." })
