@@ -5,7 +5,7 @@ const { uploadcloudinary, deletecloudinary } = require("../servicer/cloudinary")
 const addcategories = async (req, res) => {
     try {
         console.log(req.body, req.user, req.file);
-
+   
         const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
 
         const category = await Categories.create(
