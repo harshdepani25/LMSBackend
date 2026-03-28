@@ -71,11 +71,11 @@ const updateCouser = async (req, res) => {
 
             const cloudinaryObj = await uploadcloudinary(req.file.path, 'Course')
 
-            uData.course_img = { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url
+            uData.course_img = { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }
         }
 
         console.log(uData);
-v
+
         const coruse = await Coruse.findByIdAndUpdate(
             req.params.id,
             uData,
