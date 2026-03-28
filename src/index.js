@@ -8,7 +8,7 @@ const createSocketIO = require('./servicer/socketIO');
 const cors = require('cors')
 
 app.use(cors({
-    origin: 'https:///lms-frontend-ten-steel.vercel.app',
+    origin: 'https://lms-frontend-ten-steel.vercel.app/',
     // origin:"http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true
