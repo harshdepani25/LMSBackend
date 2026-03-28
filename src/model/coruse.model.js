@@ -5,7 +5,7 @@ const coruseSchema = new mongoose.Schema(
         categories_id: {
             type: mongoose.Types.ObjectId,
             ref: "categories",
-        //    required:true, 
+            //    required:true, 
         },
         name: {
             type: String,
@@ -17,11 +17,11 @@ const coruseSchema = new mongoose.Schema(
             type: String,
         },
         fees: {
-            type:Number,
+            type: Number,
             // required: true,
         },
         duration: {
-            type:String,
+            type: String,
             // required: true,
         },
         // intrucotor_id: {
@@ -30,7 +30,13 @@ const coruseSchema = new mongoose.Schema(
         //     required: true,
         // },
         course_img: {
-            type: String
+            public_id: {
+                type: String
+            },
+            url: {
+                type: String
+            }
+
         },
         perview_url: {
             type: String
