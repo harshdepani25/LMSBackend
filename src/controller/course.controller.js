@@ -55,10 +55,10 @@ const getCouser = async (req, res) => {
 
 const updateCouser = async (req, res) => {
     try {
-
-        let uData = { ...req.body, course_img: { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url } }
-
         const courseData = await Coruse.findById(req.params.id);
+
+        let uData = { ...req.body, course_img: { public_id: courseData.public_id, url: courseData.url } }
+
 
         if (req.file) {
             // fs.unlink(courseData.course_img, (error) => {
