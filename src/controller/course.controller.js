@@ -56,7 +56,7 @@ const getCouser = async (req, res) => {
 const updateCouser = async (req, res) => {
     try {
 
-        let uData = { ...req.body }
+        let uData = { ...req.body, course_img: { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url } }
 
         const courseData = await Coruse.findById(req.params.id);
 
