@@ -57,6 +57,9 @@ const updateCouser = async (req, res) => {
     try {
         const courseData = await Coruse.findById(req.params.id);
 
+        console.log("All course", courseData);
+        
+
         let uData = { ...req.body, course_img: { public_id: courseData.public_id, url: courseData.url } }
    
 
