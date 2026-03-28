@@ -63,6 +63,8 @@ const updatecategories = async (req, res) => {
     try {
         const categoryData = await Categories.findById(req.params.id);
 
+        console.log("cat Dart:", categoryData);
+        
         let uData = { ...req.body, category_img: { public_id: categoryData.category_img.public_id, url: categoryData.category_img.url } }
 
 
