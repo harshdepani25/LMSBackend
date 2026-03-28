@@ -5,8 +5,9 @@ const addCouser = async (req, res) => {
     try {
         console.log(req.body);
 
-        const coruse = await Coruse.create({ ...req.body, course_img: req.file.path });
-        // const coruse = await Coruse.create(req.body);
+        const cloudinaryObj = await uploadcloudinary(req.file.path, 'Course')
+
+        const coruse = await Coruse.create({ ...req.body, course_img: { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url } });
 
         if (!coruse) {
             return res.status(400).json({ sucess: false, data: null, Message: "Couser not added" })
