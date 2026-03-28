@@ -74,7 +74,7 @@ const updateCouser = async (req, res) => {
             uData.course_img = { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }
         }
 
-        console.log(uData);
+        console.log("uData", uData);
 
         const coruse = await Coruse.findByIdAndUpdate(
             req.params.id,
