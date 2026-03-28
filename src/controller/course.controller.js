@@ -67,7 +67,7 @@ const updateCouser = async (req, res) => {
 
             // uData.course_img = req.file.path
 
-            await deletecloudinary(coruse?.course_img?.public_id);
+            await deletecloudinary(courseData?.course_img?.public_id);
 
             const cloudinaryObj = await uploadcloudinary(req.file.path, 'Course')
 
