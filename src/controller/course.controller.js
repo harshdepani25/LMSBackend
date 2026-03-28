@@ -58,7 +58,7 @@ const updateCouser = async (req, res) => {
         const courseData = await Coruse.findById(req.params.id);
 
         let uData = { ...req.body, course_img: { public_id: courseData.public_id, url: courseData.url } }
-
+   
 
         if (req.file) {
             // fs.unlink(courseData.course_img, (error) => {
