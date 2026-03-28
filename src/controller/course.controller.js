@@ -1,5 +1,6 @@
 const fs = require('fs');
 const Coruse = require("../model/coruse.model");
+const { uploadcloudinary } = require('../servicer/cloudinary');
 
 const addCouser = async (req, res) => {
     try {
