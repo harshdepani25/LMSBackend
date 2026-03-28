@@ -60,7 +60,7 @@ const updateCouser = async (req, res) => {
         console.log("All course", courseData);
         
 
-        let uData = { ...req.body, course_img: { public_id: courseData.public_id, url: courseData.url } }
+        let uData = { ...req.body, course_img: { public_id: courseData.course_img.public_id, url: courseData.course_img.url } }
    
 
         if (req.file) {
