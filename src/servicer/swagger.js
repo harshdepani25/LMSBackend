@@ -6,7 +6,7 @@ const doc = {
     title: 'LMSBackend',              // by default: 'REST API'
     description: 'LMS Backend Releated all APIs'         // by default: ''
   },
-  host: 'localhost:3030',                 // by default: 'localhost:3000'
+  host: 'https://lms-frontend-ten-steel.vercel.app',                 // by default: 'localhost:3000'
   basePath: '/api/v2/',             // by default: '/'
   schemes: [],              // by default: ['http']
   consumes: [],             // by default: ['application/json']
@@ -33,7 +33,14 @@ const doc = {
     },
     // { ... }
   ],
-  securityDefinitions: {},  // by default: empty object
+  securityDefinitions: {
+    apiKeyAuth: {
+      type: 'apiKey',
+      in: 'header', // can be 'header', 'query' or 'cookie'
+      name: 'Authorization', // name of the header, query parameter or cookie
+      description: 'JWT Token'
+    }
+  },  // by default: empty object
   definitions: {}           // by default: empty object
 };
 

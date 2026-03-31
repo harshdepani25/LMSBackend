@@ -4,6 +4,9 @@ const { uploadcloudinary, deletecloudinary } = require("../servicer/cloudinary")
 
 const addcategories = async (req, res) => {
     // #swagger.tags = ['category']
+     /* #swagger.security = [{
+            "apiKeyAuth": []
+    }] */
     // #swagger.consumes = ['multipart/form-data'] 
     /*
      #swagger.parameters['name'] = {
@@ -68,7 +71,6 @@ const getAllCategories = async (req, res) => {
     }
 }
 
-
 const getcategories = async (req, res) => {
     // #swagger.tags = ['category']
     try {
@@ -89,6 +91,9 @@ const getcategories = async (req, res) => {
 //fs.unlink
 const updatecategories = async (req, res) => {
     // #swagger.tags = ['category']
+     /* #swagger.security = [{
+            "apiKeyAuth": []
+    }] */
     // #swagger.consumes = ['multipart/form-data'] 
     /*
      #swagger.parameters['name'] = {
@@ -152,6 +157,9 @@ const updatecategories = async (req, res) => {
 //fs.unlink
 const deletcategories = async (req, res) => {
     // #swagger.tags = ['category']
+     /* #swagger.security = [{
+            "apiKeyAuth": []
+    }] */
     try {
         const category = await Categories.findByIdAndDelete(req.params.id);
         console.log(category);

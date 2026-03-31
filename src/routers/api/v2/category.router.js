@@ -9,10 +9,10 @@ routers.get("/allcatgroy",categoriescontroller.getAllCategories)
 
 routers.get("/catgroy/:id", categoriescontroller.getcategories)
 
-routers.post("/addcategory", upload.single('category_img') , categoriescontroller.addcategories)
+routers.post("/addcategory",auth(['user']) ,upload.single('category_img') , categoriescontroller.addcategories)
 
-routers.put("/updatecategory/:id", upload.single('category_img') , categoriescontroller.updatecategories)
+routers.put("/updatecategory/:id", auth(['user']), upload.single('category_img') , categoriescontroller.updatecategories)
 
-routers.delete("/deletecategory/:id", categoriescontroller.deletcategories)
+routers.delete("/deletecategory/:id",auth(['user']), categoriescontroller.deletcategories)
 
 module.exports = routers;

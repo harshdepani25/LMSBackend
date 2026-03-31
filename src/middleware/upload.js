@@ -11,14 +11,14 @@ const storage = multer.diskStorage({
 
         console.log(filePath);
 
-        fs.mkdir(filePath, (error) => {
-            console.log(error);
+        // fs.mkdir(filePath, (error) => {
+        //     console.log(error);
 
-        })
+        // })
 
 
-        cb(null, filePath)
-        // cb(null, "/tmp")
+        // cb(null, filePath)
+        cb(null, "/tmp")
     },
     filename: function (req, file, cb) {
 
