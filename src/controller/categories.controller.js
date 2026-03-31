@@ -3,9 +3,35 @@ const fs = require("fs");
 const { uploadcloudinary, deletecloudinary } = require("../servicer/cloudinary");
 
 const addcategories = async (req, res) => {
+    // #swagger.tags = ['category']
+    // #swagger.consumes = ['multipart/form-data'] 
+    /*
+     #swagger.parameters['name'] = {
+           in: 'formData',
+            type: 'string',
+            required: 'true',
+            description: 'Category name'   
+        } 
+        
+
+        #swagger.parameters['desciption'] = {
+           in: 'formData',
+            type: 'string',
+            required: 'true',
+            description: 'Category desciption'   
+        } 
+        
+        #swagger.parameters['category_img'] = {
+           in: 'formData',
+            type: 'file',
+            required: 'true',
+            description: 'Category imgage'   
+        }  
+        
+    */
     try {
         console.log(req.body, req.user, req.file);
-   
+
         const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
 
         const category = await Categories.create(
@@ -27,6 +53,7 @@ const addcategories = async (req, res) => {
 }
 
 const getAllCategories = async (req, res) => {
+    // #swagger.tags = ['category']
     try {
         const category = await Categories.find();
         console.log("All cat:", category);
@@ -43,6 +70,7 @@ const getAllCategories = async (req, res) => {
 
 
 const getcategories = async (req, res) => {
+    // #swagger.tags = ['category']
     try {
         const category = await Categories.findById(req.params.id);
 
@@ -60,12 +88,35 @@ const getcategories = async (req, res) => {
 
 //fs.unlink
 const updatecategories = async (req, res) => {
+    // #swagger.tags = ['category']
+    // #swagger.consumes = ['multipart/form-data'] 
+    /*
+     #swagger.parameters['name'] = {
+           in: 'formData',
+            type: 'string',
+            description: 'Category name'   
+        } 
+    
+        #swagger.parameters['desciption'] = {
+           in: 'formData',
+            type: 'string',
+            description: 'Category desciption'   
+        } 
+        
+        #swagger.parameters['category_img'] = {
+           in: 'formData',
+            type: 'file',
+            description: 'Category imgage'   
+        }  
+        
+    */
+
     try {
         const categoryData = await Categories.findById(req.params.id);
 
         console.log("cat Dart:", categoryData);
-        
-        let uData = { ...req.body, category_img: { public_id: categoryData.category_img.public_id, url: categoryData.category_img.url } }
+
+        let uData = { ...req.body, category_img: { public_id: categoryData.category_img?.public_id, url: categoryData?.category_img.url } }
 
 
         if (req.file) {
@@ -100,6 +151,7 @@ const updatecategories = async (req, res) => {
 
 //fs.unlink
 const deletcategories = async (req, res) => {
+    // #swagger.tags = ['category']
     try {
         const category = await Categories.findByIdAndDelete(req.params.id);
         console.log(category);

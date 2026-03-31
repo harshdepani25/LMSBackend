@@ -2,6 +2,7 @@ const fs = require('fs');
 const pool = require('../db/mysql');
 
 const addTerms = async (req, res) => {
+    // #swagger.tags = ['terms']
     try {
         const{name, description} = req.body
         const [rows] = await pool.query("INSERT INTO terms(name, description) VALUES (? , ? )", [name, description])
@@ -31,6 +32,7 @@ const addTerms = async (req, res) => {
 }
 
 const getAllTerms = async (req, res) => {
+    // #swagger.tags = ['terms']
     try {
         const [rows] = await pool.query("SELECT * FROM terms")
 
@@ -61,6 +63,7 @@ const getAllTerms = async (req, res) => {
 }
 
 const getTerms = async (req, res) => {
+    // #swagger.tags = ['terms']
     try {
         const [rows] = await pool.query(`SELECT * FROM terms WHERE id=${req.params.id}`)
 
@@ -89,6 +92,7 @@ const getTerms = async (req, res) => {
 }
 
 const updateTerms = async (req, res) => {
+    // #swagger.tags = ['terms']
     try {
         const{name, description} = req.body;
         const termsId = req.params.id
@@ -123,6 +127,7 @@ const updateTerms = async (req, res) => {
 }
 
 const deletTerms = async (req, res) => {
+    // #swagger.tags = ['terms']
     try {
         const [rows] = await pool.query(`DELETE FROM terms WHERE id=${req.params.id}`)
 

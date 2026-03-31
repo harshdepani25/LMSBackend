@@ -3,6 +3,7 @@ const Coruse = require("../model/coruse.model");
 const { uploadcloudinary, deletecloudinary } = require('../servicer/cloudinary');
 
 const addCouser = async (req, res) => {
+    // #swagger.tags = ['course']
     try {
         console.log(req.body);
 
@@ -22,6 +23,7 @@ const addCouser = async (req, res) => {
 }
 
 const getAllCouser = async (req, res) => {
+    // #swagger.tags = ['course']
     try {
         const coruse = await Coruse.find();
 
@@ -38,6 +40,7 @@ const getAllCouser = async (req, res) => {
 }
 
 const getCouser = async (req, res) => {
+    // #swagger.tags = ['course']
     try {
         const coruse = await Coruse.findById(req.params.id);
 
@@ -54,6 +57,7 @@ const getCouser = async (req, res) => {
 }
 
 const updateCouser = async (req, res) => {
+    // #swagger.tags = ['course']
     try {
         const courseData = await Coruse.findById(req.params.id);
 
@@ -95,6 +99,7 @@ const updateCouser = async (req, res) => {
 }
 
 const deletCouser = async (req, res) => {
+    // #swagger.tags = ['course']
     try {
         const coruse = await Coruse.findByIdAndDelete(req.params.id);
 
@@ -116,6 +121,7 @@ const deletCouser = async (req, res) => {
 }
 
 const updateCouserStauts = async (req, res) => {
+    // #swagger.tags = ['course']
     try {
 
         let uData = { ...req.body }

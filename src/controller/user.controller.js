@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const sendSMS = require("../servicer/twilio");
 
 const tokenGenrater = async (_id) => {
+  // #swagger.tags = ['user']
   try {
     console.log(_id);
 
@@ -41,6 +42,7 @@ const tokenGenrater = async (_id) => {
 };
 
 const register = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const { email, password, phone_no } = req.body;
 
@@ -96,6 +98,7 @@ const register = async (req, res) => {
 };
 
 const is_verify = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const { email, OTP } = req.body;
 
@@ -134,6 +137,7 @@ const is_verify = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const { email, password } = req.body;
 
@@ -205,6 +209,7 @@ const login = async (req, res) => {
 };
 
 const gereratenewToken = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     console.log(req.cookies.refreshToken);
 
@@ -272,6 +277,7 @@ const gereratenewToken = async (req, res) => {
 };
 
 const logout = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const { _id } = req.body;
 
@@ -315,6 +321,7 @@ const logout = async (req, res) => {
 }
 
 const checkAuth = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const token =
       req.cookies.accessToken ||
@@ -370,6 +377,7 @@ const checkAuth = async (req, res) => {
 }
 
 const ForgotPass = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const { email } = req.body;
 
@@ -400,6 +408,7 @@ const ForgotPass = async (req, res) => {
 }
 
 const ResetPass = async (req, res) => {
+  // #swagger.tags = ['user']
   try {
     const { email, password } = req.body;
 

@@ -7,9 +7,15 @@ const GoogleProvider = require('./servicer/provider');
 const createSocketIO = require('./servicer/socketIO');
 const cors = require('cors')
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger-output.json');
+const swaggerAutogen = require('swagger-autogen')();
+
+
+
 app.use(cors({
-    origin: 'https://lms-frontend-ten-steel.vercel.app',
-    // origin:"http://localhost:5173",
+    // origin: 'https://lms-frontend-ten-steel.vercel.app',
+    origin:"http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true
 }))     
@@ -21,6 +27,9 @@ app.use(cookieParser())
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 GoogleProvider.GoogleProvider();
 // GoogleProvider.FacebookProvider();
@@ -38,8 +47,8 @@ app.get("/", (req, res) => {
 }
 )
 
-// app.listen(process.env.PORT, () => { 
-//     console.log("Server Started at 3030");
-// })
+app.listen(process.env.PORT, () => { 
+    console.log("Server Started at 3030");
+})
 
-module.exports = app;
+// module.exports = app;
