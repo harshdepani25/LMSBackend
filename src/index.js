@@ -18,7 +18,7 @@ app.use(cors({
     // origin:"http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true
-}))     
+}))        
 
 app.use('/public', express.static('public'))
 
