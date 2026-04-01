@@ -5,7 +5,7 @@ const auth = (role) => async (req, res, next) => {
     try {
         const token =
             req.cookies.accessToken ||
-            req.header("Authorization")?.replace("Bearer ", "");
+            req.header("Authorization")?.replace("Bearer: ", "");
 
         console.log(role, token);
 

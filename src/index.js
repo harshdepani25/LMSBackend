@@ -32,7 +32,7 @@ app.use(passport.session());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 GoogleProvider.GoogleProvider();
-// GoogleProvider.FacebookProvider();
+// GoogleProvider.FacebookProvider();    
 createSocketIO();
 
 const routers1 = require('./routers/api/v2');
