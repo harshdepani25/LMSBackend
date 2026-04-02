@@ -5,7 +5,7 @@ const Joi = require("joi");
 
 const categorySchema = Joi.object({
     name: Joi.string().required(),
-    desciption: Joi.string().required(),
+    desciption: Joi.string().required("desciption is required."),
     category_img: Joi.required()
 })
 
