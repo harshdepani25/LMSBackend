@@ -1,6 +1,14 @@
 const Categories = require("../model/categories.model");
 const fs = require("fs");
 const { uploadcloudinary, deletecloudinary } = require("../servicer/cloudinary");
+const Joi = require("joi");
+
+const categorySchema = Joi.object({
+    name: Joi.string().required(),
+    desciption: Joi.string().required(),
+    category_img: Joi.required()
+})
+
 
 const addcategories = async (req, res) => {
     // #swagger.tags = ['category']
@@ -31,8 +39,15 @@ const addcategories = async (req, res) => {
             description: 'Category imgage'   
         }  
         
-    */
+    */    
+
     try {
+        const  { error, value } = categorySchema.validate(req.body);
+
+        if(error){
+            return res.status(400).json({ sucess: false, data: null, Message: error})
+        }
+
         console.log(req.body, req.user, req.file);
 
         const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
