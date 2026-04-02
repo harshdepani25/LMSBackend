@@ -38,7 +38,7 @@ const addcategories = async (req, res) => {
             required: 'true',
             description: 'Category imgage'   
         }  
-        
+           
     */    
 
     try {
