@@ -48,7 +48,7 @@ const addcategories = async (req, res) => {
             return res.status(400).json({ sucess: false, data: null, Message: error})
         }
 
-        console.log(req.body, req.user, req.file);
+        console.log(req.body, req.user, req.file);   
 
         const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
 
