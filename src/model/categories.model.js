@@ -16,15 +16,14 @@ const categoriesSchema = new mongoose.Schema(
             ref: "categories",
             default: null
         },
-        category_img: {
+        category_img:  [{
             public_id: {
-                type: String
+                type: String,
             },
             url: {
-                type: String
+                type: String,
             }
-
-        },
+        }],
         is_active: {
             type: Boolean,
             default: true

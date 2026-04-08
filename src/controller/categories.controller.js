@@ -6,7 +6,7 @@ const Joi = require("joi");
 const categorySchema = Joi.object({
     name: Joi.string().required(),
     desciption: Joi.string().required(),
-    // category_img: Joi.image().required()
+    category_img: Joi.required()
 })
 
 
@@ -48,14 +48,14 @@ const addcategories = async (req, res) => {
             return res.status(400).json({ sucess: false, data: null, Message: error})
         }
 
-        console.log(req.body, req.user, req.file);   
+        console.log("filessssssssss",req.file);   
 
         const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
 
         const category = await Categories.create(
             {
                 ...req.body,
-                category_img: { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }
+                category_img: [{ public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }]
             });
 
         // const category = await Categories.create(req.body);

@@ -5,11 +5,25 @@ const { uploadcloudinary, deletecloudinary } = require('../servicer/cloudinary')
 const addCouser = async (req, res) => {
     // #swagger.tags = ['course']
     try {
-        console.log(req.body);
+        // console.log("cat data", req.body);
+        // console.log("filesss", req.files);
 
-        const cloudinaryObj = await uploadcloudinary(req.file.path, 'Course')
+        const Files = req.files
 
-        const coruse = await Coruse.create({ ...req.body, course_img: { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url } });
+        let uploadedImages = [];
+
+        for (const course_img of Files) {
+
+            const cloudinaryObj = await uploadcloudinary(course_img.path, 'Course')
+
+            uploadedImages.push({
+                public_id: cloudinaryObj.public_id,
+                url: cloudinaryObj.url
+            });
+        }
+
+
+        const coruse = await Coruse.create({ ...req.body, course_img: uploadedImages });
 
         if (!coruse) {
             return res.status(400).json({ sucess: false, data: null, Message: "Couser not added" })
@@ -62,21 +76,38 @@ const updateCouser = async (req, res) => {
         const courseData = await Coruse.findById(req.params.id);
 
         console.log("All course", courseData);
-        
-        let uData = { ...req.body, course_img: { public_id: courseData.course_img.public_id, url: courseData.course_img.url } }
 
-        if (req.file) {
+        let uData = { ...req.body, course_img : courseData.course_img }
+
+
+         const Files = req.files
+         console.log(Files);
+         
+        if (req.files?.length > 0) {
             // fs.unlink(courseData.course_img, (error) => {
             //     console.log(error);
             // })
 
             // uData.course_img = req.file.path
+            
+            let uploadedImages = [];
 
-            await deletecloudinary(courseData?.course_img?.public_id);
+            courseData.course_img.map((v) => deletecloudinary(v?.public_id))
+            
+            for (const course_img of Files) {
+                
+                const cloudinaryObj = await uploadcloudinary(course_img.path, 'Course')
 
-            const cloudinaryObj = await uploadcloudinary(req.file.path, 'Course')
+                uploadedImages.push({
+                    public_id: cloudinaryObj.public_id,
+                    url: cloudinaryObj.url
+                });
+            }
 
-            uData.course_img = { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }
+
+            // const cloudinaryObj = await uploadcloudinary(req.file.path, 'Course')
+
+            uData.course_img = uploadedImages
         }
 
         console.log("uData", uData);

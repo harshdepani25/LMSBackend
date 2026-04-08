@@ -8,13 +8,13 @@ routers.get("/allcourse", coursecontroller.getAllCouser)
 
 routers.get("/getcourse/:id", coursecontroller.getCouser)
 
-routers.post("/addcourse", upload.single('course_img')  , coursecontroller.addCouser)
+routers.post("/addcourse", upload.array('course_img', 10), coursecontroller.addCouser)
 
-routers.put("/updatecourse/:id", upload.single('course_img'), coursecontroller.updateCouser)
+routers.put("/updatecourse/:id", upload.array('course_img', 10), coursecontroller.updateCouser)
 
 routers.delete("/deletecourse/:id", coursecontroller.deletCouser)
 
-routers.put("/updateCouserStauts/:id", coursecontroller.updateCouserStauts )
+routers.put("/updateCouserStauts/:id", coursecontroller.updateCouserStauts)
 
 module.exports = routers;
 
