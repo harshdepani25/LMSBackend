@@ -12,9 +12,9 @@ const categorySchema = Joi.object({
 
 const addcategories = async (req, res) => {
     // #swagger.tags = ['category']
-     /* #swagger.security = [{
-            "apiKeyAuth": []
-    }] */
+    /* #swagger.security = [{
+           "apiKeyAuth": []
+   }] */
     // #swagger.consumes = ['multipart/form-data'] 
     /*
      #swagger.parameters['name'] = {
@@ -39,18 +39,22 @@ const addcategories = async (req, res) => {
             description: 'Category imgage'   
         }  
            
-    */    
+    */
 
     try {
-        const  { error, value } = categorySchema.validate(req.body);
+        console.log("filessssssssss", req.file);
 
-        if(error){
-            return res.status(400).json({ sucess: false, data: null, Message: error})
-        }
+        // const  { error, value } = categorySchema.validate(req.body);
 
-        console.log("filessssssssss",req.file);   
+        // if(error){
+        //     return res.status(400).json({ sucess: false, data: null, Message: error})
+        // }
+
 
         const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
+
+        console.log("objjjjj", cloudinaryObj);
+
 
         const category = await Categories.create(
             {
@@ -106,9 +110,9 @@ const getcategories = async (req, res) => {
 //fs.unlink
 const updatecategories = async (req, res) => {
     // #swagger.tags = ['category']
-     /* #swagger.security = [{
-            "apiKeyAuth": []
-    }] */
+    /* #swagger.security = [{
+           "apiKeyAuth": []
+   }] */
     // #swagger.consumes = ['multipart/form-data'] 
     /*
      #swagger.parameters['name'] = {
@@ -134,24 +138,48 @@ const updatecategories = async (req, res) => {
     try {
         const categoryData = await Categories.findById(req.params.id);
 
-        console.log("cat Dart:", categoryData);
+        console.log("cat Dart:", categoryData, req.file, req.files);
 
-        let uData = { ...req.body, category_img: { public_id: categoryData.category_img?.public_id, url: categoryData?.category_img.url } }
+        let uData = { ...req.body, category_img: { public_id: categoryData.category_img[0]?.public_id, url: categoryData?.category_img[0].url } }
 
 
-        if (req.file) {
+        if (req.files?.length > 0) {
             // fs.unlink(categoryData.category_img, (error) => {
             //     console.log(error);
             // })
+            console.log("filessssssssss", req.file);
 
-            await deletecloudinary(categoryData?.category_img?.public_id);
 
-            const cloudinaryObj = await uploadcloudinary(req.file.path, 'Categroy')
+            categoryData?.category_img.map(async (v) => await deletecloudinary(v?.public_id))
 
-            uData.category_img = { public_id: cloudinaryObj.public_id, url: cloudinaryObj.url }
+
+            const Files = req.file
+            let uploadedImages = [];
+
+            Files.map(async (v) => {
+                const cloudinaryObj = await uploadcloudinary(v.path, 'Categroy')
+
+                uploadedImages.push({
+                    public_id: cloudinaryObj.public_id,
+                    url: cloudinaryObj.url
+                });
+
+                return uploadedImages
+            })
+
+            // for (const category_img of Files) {
+
+            //     const cloudinaryObj = await uploadcloudinary(category_img.path, 'Categroy')
+
+            //     uploadedImages.push({
+            //         public_id: cloudinaryObj.public_id,
+            //         url: cloudinaryObj.url
+            //     });
+            // }
+            uData.category_img = uploadedImages
         }
 
-        console.log(uData);
+        console.log("uData", uData);
 
         const category = await Categories.findByIdAndUpdate(
             req.params.id,
@@ -172,9 +200,9 @@ const updatecategories = async (req, res) => {
 //fs.unlink
 const deletcategories = async (req, res) => {
     // #swagger.tags = ['category']
-     /* #swagger.security = [{
-            "apiKeyAuth": []
-    }] */
+    /* #swagger.security = [{
+           "apiKeyAuth": []
+   }] */
     try {
         const category = await Categories.findByIdAndDelete(req.params.id);
         console.log(category);
@@ -184,7 +212,7 @@ const deletcategories = async (req, res) => {
 
         // })
 
-        await deletecloudinary(category?.category_img?.public_id);
+        category?.category_img.map(async (v) => await deletecloudinary(v?.public_id))
 
         if (!category) {
             return res.status(400).json({ sucess: false, data: [], Message: "Categroy data not deleted." })

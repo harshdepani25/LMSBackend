@@ -1,28 +1,16 @@
 const express = require('express');
+const { sectioncontroller } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allsection", (req, res) => {
-    res.status(200).json({Message : "All section data fechted"})
-})
+routers.get("/allsection", sectioncontroller.getAllsection)
 
-routers.get("/section", (req, res) => {
-    res.status(200).json({Message : "section data fechted"})
-})
+routers.get("/section/:id", sectioncontroller.getsection)
 
-routers.post("/addsection", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "section data Added"})
-})
+routers.post("/addsection", sectioncontroller.addsection)
 
-routers.put("/updatesection/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "section data Upadted"})
-})
+routers.put("/updatesection/:id", sectioncontroller.updatesection)
 
-routers.delete("/deletesection/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "section data Deleted"})
-})
+routers.delete("/deletesection/:id", sectioncontroller.deletsection)
 
 module.exports = routers;

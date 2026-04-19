@@ -138,8 +138,8 @@ const deletCouser = async (req, res) => {
         //     console.log(error);
 
         // })
-
-        await deletecloudinary(coruse?.course_img?.public_id);
+        coruse?.course_img.map(async (v) =>  await deletecloudinary(v?.public_id))
+       
 
         if (!coruse) {
             return res.status(400).json({ sucess: false, data: [], Message: "Couser data not deleted." })

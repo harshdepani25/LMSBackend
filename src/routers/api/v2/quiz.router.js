@@ -1,28 +1,16 @@
 const express = require('express');
+const { quizcontroller } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allquiz", (req, res) => {
-    res.status(200).json({Message : "All quiz data fechted"})
-})
+routers.get("/allquiz", quizcontroller.getAllquiz)
 
-routers.get("/quiz", (req, res) => {
-    res.status(200).json({Message : "quiz data fechted"})
-})
+routers.get("/quiz/:id", quizcontroller.getquiz)
 
-routers.post("/addquiz", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "quiz data Added"})
-})
+routers.post("/addquiz",quizcontroller.addquiz)
 
-routers.put("/updatequiz/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "quiz data Upadted"})
-})
+routers.put("/updatequiz/:id", quizcontroller.updatequiz)
 
-routers.delete("/deletequiz/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "quiz data Deleted"})
-})
+routers.delete("/deletequiz/:id", quizcontroller.deletquiz)
 
 module.exports = routers;
