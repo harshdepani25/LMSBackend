@@ -2,36 +2,37 @@ const { default: mongoose, sanitizeFilter } = require("mongoose");
 
 const quizContentSchema = new mongoose.Schema(
     {
-        name: {
-            type: mongoose.Types.ObjectId,
-            ref: "quiz",
-            // required: true,
+        quiz: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'quiz',
+            required: true
         },
-        qustion: {
+        question: {
             type: String,
-            trim: true
+
         },
-        option: [{
+        options: [
+            {
+                type: String,
+            }
+        ],
+        Answer: {
             type: String,
-            required: true,
-        }],
-        answer: {
-            type: String,
-            required: true,
+
         },
-        mark: {
-            type: String,
+        Mark: {
+            type: Number
         },
-        is_active: {
+        isActive: {
             type: Boolean,
-            default: true
+            default: false
         }
     },
     {
         timestamps: true,
         versionKey: false
     }
-)
+);
 
 const QuizContent = mongoose.model("quizContent", quizContentSchema)
 

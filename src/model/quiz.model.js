@@ -16,6 +16,9 @@ const quizSchema = new mongoose.Schema(
             trim: true,
             required: true,
         },
+        mark:{
+            type:Number
+        },
         is_active: {
             type: Boolean,
             default: true
