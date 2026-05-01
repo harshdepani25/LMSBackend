@@ -149,9 +149,7 @@ const updatecategories = async (req, res) => {
             // })
             console.log("filessssssssss", req.file);
 
-
             categoryData?.category_img.map(async (v) => await deletecloudinary(v?.public_id))
-
 
             const Files = req.file
             let uploadedImages = [];

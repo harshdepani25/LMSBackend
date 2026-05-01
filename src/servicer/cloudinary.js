@@ -11,16 +11,18 @@ const uploadcloudinary = async (file, folder) => {
         const uploadResult = await cloudinary.uploader
             .upload(
                 file, {
-                folder: folder
+                folder: folder,
+                resource_type:'auto'
             })
             .catch((error) => {
-                console.log(error);
+                console.log("error for cloudnary", error);
             });
         console.log(uploadResult);
 
         return {
             public_id: uploadResult.public_id,
-            url: uploadResult.url
+            url: uploadResult.url,
+            type : uploadResult.resource_type,
         }
     } catch (error) {
         console.log(error);
@@ -28,19 +30,18 @@ const uploadcloudinary = async (file, folder) => {
     }
 }
 
-const deletecloudinary = async (public_id) => {
+const deletecloudinary = async (public_id, type) => {
     try {
         const result = await cloudinary.uploader
-            .destroy(public_id) 
+            .destroy(public_id,{resource_type:type}) 
             .then(result => console.log(result));
-
-
     }
     catch (error) {
 
     }
 
 }
+
 module.exports = {
     uploadcloudinary,
     deletecloudinary

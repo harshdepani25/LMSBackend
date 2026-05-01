@@ -1,28 +1,17 @@
 const express = require('express');
+const { contentcontroller } = require('../../../controller');
+const upload = require('../../../middleware/upload');
 const routers = express.Router()
 
 
-routers.get("/allcontent", (req, res) => {
-    res.status(200).json({Message : "All content data fechted"})
-})
+routers.get("/allcontent", contentcontroller.getAllcontent)
 
-routers.get("/content", (req, res) => {
-    res.status(200).json({Message : "content data fechted"})
-})
+routers.get("/content/:id", contentcontroller.getcontent)
 
-routers.post("/addcontent", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "content data Added"})
-})
+routers.post("/addcontent", upload.single('content_file'),contentcontroller.addcontent)
 
-routers.put("/updatecontent/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "content data Upadted"})
-})
+routers.put("/updatecontent/:id", upload.single('content_file'),contentcontroller.updatecontent)
 
-routers.delete("/deletecontent/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "content data Deleted"})
-})
+routers.delete("/deletecontent/:id", contentcontroller.deletcontent)
 
 module.exports = routers;

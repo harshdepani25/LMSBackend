@@ -4,7 +4,6 @@ const fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-
         console.log("file", file);
 
         const filePath = path.join("public", "Images", file.fieldname);
@@ -12,16 +11,14 @@ const storage = multer.diskStorage({
         console.log(filePath);
 
         fs.mkdir(filePath, (error) => {
-            console.log(error);
+            console.log("error for upload.js",error);
 
         })
-
 
         cb(null, filePath)
         // cb(null, "/tmp")
     },
     filename: function (req, file, cb) {
-
         const ext = path.extname(file.originalname).toLowerCase();
 
         // if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg' && ext !== '.svg') {

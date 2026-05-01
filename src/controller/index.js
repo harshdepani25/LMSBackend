@@ -3,5 +3,6 @@ module.exports.coursecontroller = require("./course.controller")
 module.exports.userscontroller = require("./user.controller");
 module.exports.termscontroller = require("./terms.controller")
 module.exports.sectioncontroller = require("./section.controller")
+module.exports.contentcontroller = require("./content.controller")
 module.exports.quizcontroller = require("./quiz.controller")
 module.exports.quiz_contentcontroller = require("./quiz_content.controller")
