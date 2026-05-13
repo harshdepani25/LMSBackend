@@ -1,28 +1,16 @@
 const express = require('express');
+const { cartController } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allcart", (req, res) => {
-    res.status(200).json({Message : "All cart data fechted"})
-})
+routers.get("/allcart", cartController.getAllCart)
 
-routers.get("/cart", (req, res) => {
-    res.status(200).json({Message : "cart data fechted"})
-})
+routers.get("/cart/:id", cartController.getCart)
 
-routers.post("/addcart", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "cart data Added"})
-})
+routers.post("/addcart", cartController.addCart)
 
-routers.put("/updatecart/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "cart data Upadted"})
-})
+routers.put("/updatecart/:id", cartController.upadateCart)
 
-routers.delete("/deletecart/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "cart data Deleted"})
-})
+routers.delete("/deletecart/:id", cartController.deleteCart)
 
 module.exports = routers;
