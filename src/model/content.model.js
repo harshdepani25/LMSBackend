@@ -21,12 +21,15 @@ const contentSchema = new mongoose.Schema(
             url: {
                 type: String,
             },
-            type : {
-                type : String
+            type: {
+                type: String
             }
         }],
-        order:{
-            type:String
+        type: {
+            type: String
+        },
+        order: {
+            type: String
         },
         is_active: {
             type: Boolean,
