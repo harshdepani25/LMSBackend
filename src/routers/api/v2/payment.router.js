@@ -1,28 +1,20 @@
 const express = require('express');
+const { paymentController } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allpayment", (req, res) => {
-    res.status(200).json({Message : "All payment data fechted"})
-})
+routers.get("/allpayment", paymentController.getAllPayment)
 
-routers.get("/payment", (req, res) => {
-    res.status(200).json({Message : "payment data fechted"})
-})
+routers.get("/payment/:id", paymentController.getPayment)
 
-routers.post("/addpayment", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "payment data Added"})
-})
+routers.post("/addpayment",paymentController.addPayment)
 
-routers.put("/updatepayment/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "payment data Upadted"})
-})
+routers.put("/updatepayment/:id",paymentController.upadatePayment)
 
-routers.delete("/deletepayment/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "payment data Deleted"})
-})
+routers.delete("/deletepayment/:id",paymentController.deletePayment)
+
+routers.post("/payment-creatOrder", paymentController.CreateOrder)
+
+routers.post("/payment-verify", paymentController.verifyPayment)
 
 module.exports = routers;
