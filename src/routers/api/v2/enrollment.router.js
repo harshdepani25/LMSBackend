@@ -1,28 +1,16 @@
 const express = require('express');
+const { enrollmentController } = require('../../../controller');
 const routers = express.Router()
 
 
-routers.get("/allenrollment", (req, res) => {
-    res.status(200).json({Message : "All enrollment data fechted"})
-})
+routers.get("/allenrollment", enrollmentController.getAllEnroll)
 
-routers.get("/enrollment", (req, res) => {
-    res.status(200).json({Message : "enrollment data fechted"})
-})
+routers.get("/enrollment/:id", enrollmentController.getEnroll)
 
-routers.post("/addenrollment", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "enrollment data Added"})
-})
+routers.post("/addenrollment", enrollmentController.addEnroll)
 
-routers.put("/updateenrollment/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "enrollment data Upadted"})
-})
+routers.put("/updateenrollment/:id", enrollmentController.updateEnroll)
 
-routers.delete("/deleteenrollment/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "enrollment data Deleted"})
-})
+routers.delete("/deleteenrollment/:id", enrollmentController.deleteEnroll)
 
 module.exports = routers;
