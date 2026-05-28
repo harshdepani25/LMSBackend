@@ -1,28 +1,13 @@
 const express = require('express');
+const { whislistContoller } = require('../../../controller');
 const routers = express.Router()
 
+routers.get("/allwishlist", whislistContoller.getAllwhistlist)
 
-routers.get("/allwishlist", (req, res) => {
-    res.status(200).json({Message : "All wishlist data fechted"})
-})
+routers.post("/addwishlist", whislistContoller.addWhistlist)
 
-routers.get("/wishlist", (req, res) => {
-    res.status(200).json({Message : "wishlist data fechted"})
-})
+routers.put("/updatewishlist/:id", whislistContoller.updateWhistlist)
 
-routers.post("/addwishlist", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "wishlist data Added"})
-})
-
-routers.put("/updatewishlist/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "wishlist data Upadted"})
-})
-
-routers.delete("/deletewishlist/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "wishlist data Deleted"})
-})
+routers.delete("/deletewishlist/:id", whislistContoller.deleteWhistlist)
 
 module.exports = routers;
