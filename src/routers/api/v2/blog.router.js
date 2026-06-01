@@ -1,28 +1,16 @@
 const express = require('express');
+const { blogController } = require('../../../controller');
 const routers = express.Router()
+const upload = require('../../../middleware/upload');
 
+routers.get("/allblog", blogController.getAllBlog)
 
-routers.get("/allblog", (req, res) => {
-    res.status(200).json({Message : "All blog data fechted"})
-})
+routers.get("/blog/:id", blogController.getBlog)
 
-routers.get("/blog", (req, res) => {
-    res.status(200).json({Message : "blog data fechted"})
-})
+routers.post("/addblog", upload.array('content_file', 10), blogController.addBlog)
 
-routers.post("/addblog", (req,res) => {
-    console.log(req.body);
-    res.status(200).json({Message : "blog data Added"})
-})
+routers.put("/updateblog/:id", upload.array('content_file', 10), blogController.updateBlog)
 
-routers.put("/updateblog/:id", (req,res) => {
-    console.log(req.body, req.params.id);
-    res.status(200).json({Message : "blog data Upadted"})
-})
-
-routers.delete("/deleteblog/:id", (req,res) => {
-    console.log(req.params.id);
-    res.status(200).json({Message : "blog data Deleted"})
-})
+routers.delete("/deleteblog/:id", blogController.deleteBlog)
 
 module.exports = routers;
