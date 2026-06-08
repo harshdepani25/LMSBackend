@@ -63,7 +63,7 @@ mongodb().catch((err) => {
     console.error("Failed to connect to MongoDB:", err);
 });
 
-// ✅ Home route
+
 app.get("/", (req, res) => {
     res.send("Welcome IN LMS Backend");
 });
