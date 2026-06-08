@@ -7,7 +7,6 @@ const enrollSchema = new mongoose.Schema(
                 course_id: {
                     type: mongoose.Types.ObjectId,
                     ref: 'course',
-
                 }
             }
         ],
@@ -24,13 +23,33 @@ const enrollSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'user',
         },
-        paymentId:{
-             type: String
+        paymentId: {
+            type: String
         },
         payment_status: {
             type: String,
             default: 'pending'
-        }
+        },
+
+        progress: [{
+            prercentage: {
+                type: Number,
+                default: 0,
+            },
+            totalleactue: {
+                type: Number,
+                default: 0,
+            },
+            completedLectures: {
+                type: Number,
+                default: 0,
+            },
+            course_id: {
+                type: mongoose.Types.ObjectId,
+                ref: 'course',
+            }
+        }]
+
     },
     {
         timestamps: true,

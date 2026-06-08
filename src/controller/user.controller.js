@@ -4,6 +4,7 @@ const sendMail = require("../servicer/nodemailer");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const sendSMS = require("../servicer/twilio");
+const { uploadcloudinary } = require("../servicer/cloudinary");
 
 const tokenGenrater = async (_id) => {
   // #swagger.tags = ['user']
@@ -435,6 +436,47 @@ const ResetPass = async (req, res) => {
   }
 }
 
+const editProfile = async (req, res) => {
+  try {
+    const userExites = await Users.findById(req.params.id);
+
+    if (!userExites) {
+      return res.status(404).json({
+        sucess: false,
+        data: null,
+        Message: "User Not Found",
+      });
+    }
+    console.log("filesssss", req.file);
+    
+    const cloudinaryObj = await uploadcloudinary(req?.file?.path, 'PFP')
+    console.log("objjjjj", cloudinaryObj);
+
+    const data = {...req.body, pfp: {
+            public_id: cloudinaryObj.public_id,
+            url: cloudinaryObj.url
+        }}
+
+    const user = await Users.findByIdAndUpdate(
+      req.params.id,
+      data,
+      { new: true, runValidators: true }
+    )
+
+    return res.status(200).json({
+      sucess: true,
+      data: user,
+      Message: "Profile Updated Successfully",
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      sucess: false,
+      data: null,
+      Message: "Internal Server Error : " + error.message,
+    });
+  }
+};
 
 module.exports = {
   register,
@@ -445,5 +487,6 @@ module.exports = {
   checkAuth,
   tokenGenrater,
   ForgotPass,
-  ResetPass
+  ResetPass,
+  editProfile,
 };

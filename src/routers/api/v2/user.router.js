@@ -4,6 +4,8 @@ const passport = require('passport');
 const { tokenGenrater } = require('../../../controller/user.controller');
 const creatPdf = require('../../../servicer/pdfMake');
 const routers = express.Router()
+const upload = require('../../../middleware/upload');
+
 
 routers.post("/register", userscontroller.register)
 routers.post("/login", userscontroller.login)
@@ -13,6 +15,8 @@ routers.post("/logout", userscontroller.logout)
 routers.get("/checkAuth", userscontroller.checkAuth)
 routers.post("/forgot", userscontroller.ForgotPass)
 routers.post("/reset", userscontroller.ResetPass)
+routers.put("/edit-profile/:id", upload.single('pfp'), userscontroller.editProfile);
+
 
 routers.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -58,7 +62,7 @@ routers.get('/auth/facebook/callback',
 
     const { accessToken, refreshToken } = await tokenGenrater(req.user._id);
 
-    console.log(accessToken, refreshToken); 
+    console.log(accessToken, refreshToken);
 
     const accOPNT = {
       httpOnly: true,
@@ -76,7 +80,7 @@ routers.get('/auth/facebook/callback',
 
     return res
       .cookie("accessToken", accessToken, accOPNT)
-      .cookie("refereshtoken", refreshToken, refOPNT)       
+      .cookie("refereshtoken", refreshToken, refOPNT)
       .status(200)
       .redirect("https://lms-frontend-ten-steel.vercel.app")
   });

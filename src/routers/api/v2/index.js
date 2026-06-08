@@ -20,6 +20,9 @@ const blog = require("./blog.router")
 const wishlist = require("./wishlist.router")
 const terms = require("./terms.router")
 const coupan = require("./coupan.router")
+const tag = require("./tag.router")
+const like = require("./like.router")
+const comment = require("./blogComment.router")
 
 routers1.use("/category", category);
 routers1.use("/user", user);
@@ -39,8 +42,9 @@ routers1.use("/card", card);
 routers1.use("/blog", blog);
 routers1.use("/wishlist", wishlist);
 routers1.use("/terms", terms);
-routers1.use("/coupan", coupan)
-
+routers1.use("/coupan", coupan);
+routers1.use("/tag", tag);
+routers1.use("/like", like);
+routers1.use("/comment", comment);
 
 module.exports = routers1
-

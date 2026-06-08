@@ -8,7 +8,8 @@ const bolgSchema = new mongoose.Schema(
             ref: 'users'
         },
         tag:{
-            type:String
+            type: mongoose.Types.ObjectId,
+            ref: 'tag'
         },
         title : {
             type : String
@@ -27,6 +28,10 @@ const bolgSchema = new mongoose.Schema(
                 type: String,
             }
         }],
+        view :{
+            type : Number,
+            default : 0
+        },
         date: {
             type: String,
             default: dayjs(Date.now()).format("DD/MM/YYYY")
