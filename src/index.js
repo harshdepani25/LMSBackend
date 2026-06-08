@@ -9,7 +9,6 @@ const cors = require('cors')
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../swagger-output.json');
-const swaggerAutogen = require('swagger-autogen')();
 
 
 
@@ -40,7 +39,9 @@ const routers1 = require('./routers/api/v2');
 const mongodb = require('./db/mongodb');
 app.use("/api/v2", routers1);
 
-mongodb();
+mongodb().catch((err) => {
+    console.error("Failed to connect to MongoDB on startup:", err);
+});
 
 app.get("/", (req, res) => {
     res.send("Welcome IN LMS Backend")
