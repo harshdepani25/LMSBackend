@@ -48,8 +48,8 @@ app.get("/", (req, res) => {
 }
 )
 
-// app.listen(process.env.PORT, () => { 
-//     console.log("Server Started at 3030");
-// })
+app.listen(process.env.PORT, () => { 
+    console.log("Server Started at 3030");
+})
 
 module.exports = app;
