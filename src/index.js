@@ -53,17 +53,36 @@ if (!process.env.VERCEL) {
     createSocketIO();
 }
 
+// ✅ DB connection state
+let isDbConnected = false;
+
+// ✅ Connect MongoDB
+const mongodb = require('./db/mongodb');
+mongodb()
+    .then(() => { 
+        isDbConnected = true;
+        console.log("✅ MongoDB Ready");
+    })
+    .catch((err) => {
+        console.error("❌ MongoDB Failed:", err.message);
+    });
+
+// ✅ Block requests until DB is ready
+app.use((req, res, next) => {
+    if (!isDbConnected) {
+        return res.status(503).json({
+            success: false,
+            message: "Database connecting, please retry in a moment"
+        });
+    }
+    next();
+});
+
 // ✅ Routes
 const routers1 = require('./routers/api/v2');
 app.use("/api/v2", routers1);
 
-// ✅ MongoDB
-const mongodb = require('./db/mongodb');
-mongodb().catch((err) => {
-    console.error("Failed to connect to MongoDB:", err);
-});
-
-
+// ✅ Home route
 app.get("/", (req, res) => {
     res.send("Welcome IN LMS Backend");
 });

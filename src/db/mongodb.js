@@ -3,25 +3,25 @@ const { default: mongoose } = require("mongoose");
 let cachedConnection = null;
 
 const MongoDB = async () => {
-    if (!process.env.MONGODB_URL) {
-        console.error("MONGODB_URL environment variable is missing.");
+   if (isConnected) {
+        console.log('✅ Using existing MongoDB connection');
         return;
     }
 
-    if (cachedConnection) {
-        console.log("Using cached MongoDB connection");
-        return cachedConnection;
-    }
-
     try {
-        cachedConnection = await mongoose.connect(process.env.MONGODB_URL, {
-            serverSelectionTimeoutMS: 5000
+        const db = await mongoose.connect(process.env.MONGODB_URI, {
+            serverSelectionTimeoutMS: 30000,  // ✅ 30 seconds timeout
+            socketTimeoutMS: 45000,           // ✅ 45 seconds socket timeout
+            connectTimeoutMS: 30000,          // ✅ 30 seconds connect timeout
+            maxPoolSize: 10,                  // ✅ connection pool
+            bufferCommands: false,            // ✅ don't buffer if not connected
         });
-        console.log("Mongodb connected successfully");
-        return cachedConnection;
+
+        isConnected = true;
+        console.log('✅ MongoDB Connected:', db.connection.host);
     } catch (error) {
-        console.error("Error to connect : " + error);
-        cachedConnection = null;
+        isConnected = false;
+        console.error('❌ MongoDB connection error:', error.message);
         throw error;
     }
 }
