@@ -53,26 +53,31 @@ if (!process.env.VERCEL) {
     createSocketIO();
 }
 
-// ✅ DB connection state
 let isDbConnected = false;
+let dbError = null;
 
-// ✅ Connect MongoDB
 const mongodb = require('./db/mongodb');
 mongodb()
-    .then(() => { 
+    .then(() => {
         isDbConnected = true;
         console.log("✅ MongoDB Ready");
     })
     .catch((err) => {
+        dbError = err.message;
         console.error("❌ MongoDB Failed:", err.message);
     });
 
-// ✅ Block requests until DB is ready
+// ✅ Block requests until DB is ready - show real error
 app.use((req, res, next) => {
     if (!isDbConnected) {
         return res.status(503).json({
             success: false,
-            message: "Database connecting, please retry in a moment"
+            connected: isDbConnected,
+            error: dbError || "Still connecting...",  // ✅ shows real error
+            uri_set: !!process.env.MONGODB_URI,
+            uri_preview: process.env.MONGODB_URI
+                ? process.env.MONGODB_URI.substring(0, 30) + "..."  // first 30 chars only
+                : "NOT SET"
         });
     }
     next();
