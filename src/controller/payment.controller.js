@@ -1,4 +1,4 @@
-const Instance = require("../config/razorpay");
+const getRazorpay = require("../config/razorpay");
 const Enroll = require("../model/enrollment.model");
 const Payment = require("../model/payment.model");
 const crypto = require('crypto');
@@ -88,7 +88,7 @@ const CreateOrder = async (req, res) => {
             currency: "INR"
         };
 
-        const Order = await Instance.orders.create(options);
+        const Order = await getRazorpay().orders.create(options);
 
         const payment = await Payment.create({
             orderId: Order?.id,

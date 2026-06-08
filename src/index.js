@@ -30,7 +30,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 GoogleProvider.GoogleProvider();
 // GoogleProvider.FacebookProvider();    
-createSocketIO();
+if (!process.env.VERCEL) {
+    createSocketIO();
+}
 
 const routers1 = require('./routers/api/v2');
 

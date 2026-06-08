@@ -1,17 +1,21 @@
-const accountSid = process.env.TWILIO_SID;
-const authToken = process.env.TWILIO_TOKEN;
-const client = require('twilio')(accountSid, authToken);
-
-
 const sendSMS = async (phone_no, OTP) => {
     try {
-        client.messages
-            .create({
-                body: `Youe OTP is : ${OTP}`,
-                messagingServiceSid: 'MG3b2a5294453a7a6222bb9444eaaff896',
-                to: phone_no
-            })
-            .then(message => console.log(message.sid));
+        if (!process.env.TWILIO_SID || !process.env.TWILIO_TOKEN) {
+            throw new Error("Twilio is not configured. Set TWILIO_SID and TWILIO_TOKEN.");
+        }
+
+        const client = require('twilio')(
+            process.env.TWILIO_SID,
+            process.env.TWILIO_TOKEN
+        );
+
+        const message = await client.messages.create({
+            body: `Your OTP is: ${OTP}`,
+            messagingServiceSid: 'MG3b2a5294453a7a6222bb9444eaaff896',
+            to: phone_no
+        });
+
+        console.log(message.sid);
     } catch (error) {
         throw new Error(error)
     }
