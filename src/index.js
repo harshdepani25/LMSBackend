@@ -93,7 +93,21 @@ try {
 
     console.log("✅ All steps passed!");
 
-} catch(e) {
+    // ✅ Add this before MongoStore.create()
+    if (!process.env.MONGODB_URI) {
+        throw new Error("MONGODB_URI environment variable is not set!");
+    }
+
+    app.use(session({
+        secret: process.env.SESSION_SECRET || 'keyboard cat',
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI
+        })
+    }));
+
+} catch (e) {
     console.error(`💥 CRASHED AT STEP ${step}:`, e.message);
     console.error(e.stack);
 
