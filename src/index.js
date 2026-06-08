@@ -10,8 +10,6 @@ const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../swagger-output.json');
 
-
-
 app.use(cors({
     origin: 'https://lms-frontend-ten-steel.vercel.app',
     // origin:"http://localhost:5173",
