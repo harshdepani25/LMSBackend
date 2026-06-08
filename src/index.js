@@ -1,62 +1,111 @@
 require('dotenv').config()
-const path = require('path');
-const express = require('express');
-const app = express()
-const cookieParser = require('cookie-parser')
-const passport = require('passport');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const GoogleProvider = require('./servicer/provider');
-const createSocketIO = require('./servicer/socketIO');
-const cors = require('cors')
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger-output.json'); // ✅ fixed path
+let app;
 
-app.use(cors({
-    origin: 'https://lms-frontend-ten-steel.vercel.app',
-    optionsSuccessStatus: 200,
-    credentials: true
-}))
+try {
+    const path = require('path');
+    const express = require('express');
+    app = express();
+    const cookieParser = require('cookie-parser');
+    const passport = require('passport');
+    const session = require('express-session');
+    const cors = require('cors');
 
-// ✅ Fixed static path
-app.use('/public', express.static(path.join(__dirname, 'public')))
+    console.log("✅ Basic modules loaded");
 
-app.use(express.json())
-app.use(cookieParser())
+    // Test swagger load
+    let swaggerDocument;
+    try {
+        swaggerDocument = require('./swagger-output.json');
+        console.log("✅ Swagger loaded");
+    } catch(e) {
+        console.error("❌ Swagger load failed:", e.message);
+    }
 
-// ✅ Fixed session with MongoStore
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'keyboard cat',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI
-    })
-}));
+    // Test MongoStore
+    let MongoStore;
+    try {
+        MongoStore = require('connect-mongo');
+        console.log("✅ connect-mongo loaded");
+    } catch(e) {
+        console.error("❌ connect-mongo not found:", e.message);
+    }
 
-app.use(passport.initialize());
-app.use(passport.session());
+    app.use(cors({
+        origin: 'https://lms-frontend-ten-steel.vercel.app',
+        optionsSuccessStatus: 200,
+        credentials: true
+    }));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    app.use(express.json());
+    app.use(cookieParser());
 
-GoogleProvider.GoogleProvider();
+    app.use(session({
+        secret: process.env.SESSION_SECRET || 'keyboard cat',
+        resave: false,
+        saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGODB_URI
+        })
+    }));
 
-if (!process.env.VERCEL) {
-    createSocketIO();
+    console.log("✅ Session middleware set");
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    // Test GoogleProvider
+    try {
+        const GoogleProvider = require('./servicer/provider');
+        GoogleProvider.GoogleProvider();
+        console.log("✅ Google Provider loaded");
+    } catch(e) {
+        console.error("❌ GoogleProvider failed:", e.message);
+    }
+
+    // Test routers
+    try {
+        const routers1 = require('./routers/api/v2');
+        app.use("/api/v2", routers1);
+        console.log("✅ Routers loaded");
+    } catch(e) {
+        console.error("❌ Router load failed:", e.message);
+    }
+
+    // Test MongoDB
+    try {
+        const mongodb = require('./db/mongodb');
+        mongodb().catch((err) => {
+            console.error("❌ MongoDB connection failed:", err.message);
+        });
+        console.log("✅ MongoDB init called");
+    } catch(e) {
+        console.error("❌ MongoDB module failed:", e.message);
+    }
+
+    app.get("/", (req, res) => res.send("Welcome IN LMS Backend"));
+
+    app.get("/debug", (req, res) => {
+        res.json({
+            status: "running",
+            env_mongo: !!process.env.MONGODB_URI,
+            env_session: !!process.env.SESSION_SECRET,
+            env_google_id: !!process.env.GOOGLE_CLIENT_ID,
+        });
+    });
+
+} catch(e) {
+    console.error("💥 FATAL STARTUP ERROR:", e.message, e.stack);
+    
+    // Fallback app so Vercel doesn't fully crash
+    const express = require('express');
+    app = express();
+    app.use((req, res) => {
+        res.status(500).json({ 
+            error: "Startup failed", 
+            reason: e.message 
+        });
+    });
 }
-
-const routers1 = require('./routers/api/v2');
-const mongodb = require('./db/mongodb');
-
-app.use("/api/v2", routers1);
-
-mongodb().catch((err) => {
-    console.error("Failed to connect to MongoDB on startup:", err);
-});
-
-app.get("/", (req, res) => {
-    res.send("Welcome IN LMS Backend")
-})
 
 module.exports = app;
