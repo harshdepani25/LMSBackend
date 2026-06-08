@@ -12,7 +12,7 @@ routers.get("/allcatgroy", categoriescontroller.getAllCategories)
 routers.get("/catgroy/:id", categoriescontroller.getcategories)
 
 // routers.post("/addcategory",validation(addCategorySchema),upload.single('category_img') , categoriescontroller.addcategories)
-routers.post("/addcategory", validation(addCategorySchema), auth(['user']), upload.single('category_img'), categoriescontroller.addcategories)
+routers.post("/addcategory", validation(addCategorySchema), auth(['admin']), upload.single('category_img'), categoriescontroller.addcategories)
 
 // routers.put("/updatecategory/:id", upload.single('category_img') , categoriescontroller.updatecategories)
 routers.put("/updatecategory/:id", validation(updateCategorySchema), auth(['user']), upload.single('category_img'), categoriescontroller.updatecategories)
