@@ -5,7 +5,7 @@ let instance;
 const getRazorpay = () => {
     if (!process.env.RAZORPAY_API_KEY || !process.env.RAZORPAY_KEY_SECRET) {
         throw new Error(
-            "Razorpay is not configured. Set RAZORPAY_API_KEY and RAZORPAY_KEY_SECRET."
+            "Razorpay is not configured.Set RAZORPAY_API_KEY and RAZORPAY_KEY_SECRET."
         );
     }
 
