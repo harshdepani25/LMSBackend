@@ -1,14 +1,27 @@
 const { default: mongoose } = require("mongoose");
 
+let cachedConnection = null;
+
 const MongoDB = async () => {
+    if (!process.env.MONGODB_URL) {
+        console.error("MONGODB_URL environment variable is missing.");
+        return;
+    }
+
+    if (cachedConnection) {
+        console.log("Using cached MongoDB connection");
+        return cachedConnection;
+    }
+
     try {
-        await mongoose.connect(process.env.MONGODB_URL)
-            .then(() => console.log("Mongodb connected sugecfully"))
-            .catch((error) => console.log("Error to connect : " + error))    
-        } catch (error) {
-            console.log(error);
-            
+        cachedConnection = await mongoose.connect(process.env.MONGODB_URL);
+        console.log("Mongodb connected successfully");
+        return cachedConnection;
+    } catch (error) {
+        console.error("Error to connect : " + error);
+        cachedConnection = null;
+        throw error;
     }
 }
 
-module.exports=MongoDB;
+module.exports = MongoDB;

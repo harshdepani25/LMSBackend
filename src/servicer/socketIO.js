@@ -27,7 +27,12 @@ const createSocketIO = () => {
 
         });
        
-        io.listen(4000)
+        if (process.env.VERCEL) {
+            console.log("Running in Vercel environment: Skipped WebSocket server port binding (port 4000).");
+        } else {
+            io.listen(4000);
+            console.log("Socket.io listening on port 4000");
+        }
 
     } catch (error) {
         console.log(error);
