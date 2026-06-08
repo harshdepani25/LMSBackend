@@ -22,7 +22,11 @@ try {
 
     step = 3;
     const MongoStore = require('connect-mongo');
-    console.log("✅ Step 3: connect-mongo OK", typeof MongoStore.create);
+    console.log("✅ Step 3: connect-mongo OK");
+
+    // 🔍 ADD THESE LOGS
+    console.log("MONGODB_URI exists:", !!process.env.MONGODB_URI);
+    console.log("MONGODB_URI value:", process.env.MONGODB_URI); // see actual value
 
     step = 4;
     const passport = require('passport');
@@ -51,7 +55,13 @@ try {
 
     // ---- All OK, setup full app ----
     const path2 = require('path');
-
+// 🔍 Debug check
+app.get("/check-env", (req, res) => {
+    res.json({
+        MONGODB_URI: process.env.MONGODB_URI || "❌ NOT SET",
+        SESSION_SECRET: process.env.SESSION_SECRET || "❌ NOT SET",
+    });
+});
     app.use(cors({
         origin: 'https://lms-frontend-ten-steel.vercel.app',
         optionsSuccessStatus: 200,
