@@ -19,7 +19,6 @@ const getCart = async (req, res) => {
     try {
         const cart = await Cart.findById(req.params.id);
 
-        console.log(cart);
 
         if (!cart) {
             return res.status(400).json({ data: null, message: "Cart Not get" })
