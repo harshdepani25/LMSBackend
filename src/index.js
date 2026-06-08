@@ -8,6 +8,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const GoogleProvider = require('./servicer/provider');
 const cors = require('cors');
+const mongodb = require('./db/mongodb');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger-output.json');
@@ -33,7 +34,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI
+        mongoUrl: process.env.MONGODB_URI,
+        touchAfter: 24 * 3600
     })
 }));
 
@@ -53,37 +55,21 @@ if (!process.env.VERCEL) {
     createSocketIO();
 }
 
-let isDbConnected = false;
-let dbError = null;
-
-const mongodb = require('./db/mongodb');
-mongodb()
-    .then(() => {
-        isDbConnected = true;
-        console.log("✅ MongoDB Ready");
-    })
-    .catch((err) => {
-        dbError = err.message;
-        console.error("❌ MongoDB Failed:", err.message);
-    });
-
-// ✅ Block requests until DB is ready - show real error
-app.use((req, res, next) => {
-    if (!isDbConnected) {
+// ✅ KEY FIX — await MongoDB on every request
+app.use(async (req, res, next) => {
+    try {
+        await mongodb(); // ✅ waits for connection before proceeding
+        next();
+    } catch (err) {
+        console.error('❌ MongoDB connection error:', err.message);
         return res.status(503).json({
             success: false,
-            connected: isDbConnected,
-            error: dbError || "Still connecting...",  // ✅ shows real error
-            uri_set: !!process.env.MONGODB_URI,
-            uri_preview: process.env.MONGODB_URI
-                ? process.env.MONGODB_URI.substring(0, 30) + "..."  // first 30 chars only
-                : "NOT SET"
+            message: "Database connection failed: " + err.message
         });
     }
-    next();
 });
 
-// ✅ Routes
+// ✅ Routes — AFTER the mongodb middleware
 const routers1 = require('./routers/api/v2');
 app.use("/api/v2", routers1);
 
