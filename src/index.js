@@ -1,41 +1,54 @@
 require('dotenv').config()
+const path = require('path');
 const express = require('express');
 const app = express()
 const cookieParser = require('cookie-parser')
 const passport = require('passport');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const GoogleProvider = require('./servicer/provider');
 const createSocketIO = require('./servicer/socketIO');
 const cors = require('cors')
 
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('../swagger-output.json');
+const swaggerDocument = require('./swagger-output.json'); // ✅ fixed path
 
 app.use(cors({
     origin: 'https://lms-frontend-ten-steel.vercel.app',
-    // origin:"http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true
-}))        
+}))
 
-app.use('/public', express.static('public'))
+// ✅ Fixed static path
+app.use('/public', express.static(path.join(__dirname, 'public')))
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+// ✅ Fixed session with MongoStore
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI
+    })
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 GoogleProvider.GoogleProvider();
-// GoogleProvider.FacebookProvider();    
+
 if (!process.env.VERCEL) {
     createSocketIO();
 }
 
 const routers1 = require('./routers/api/v2');
-
 const mongodb = require('./db/mongodb');
+
 app.use("/api/v2", routers1);
 
 mongodb().catch((err) => {
@@ -44,11 +57,6 @@ mongodb().catch((err) => {
 
 app.get("/", (req, res) => {
     res.send("Welcome IN LMS Backend")
-}
-)
-
-// app.listen(process.env.PORT, () => { 
-//     console.log("Server Started at 3030");
-// })
+})
 
 module.exports = app;
