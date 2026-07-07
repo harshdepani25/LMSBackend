@@ -21,7 +21,7 @@ app.use(cors({
     credentials: true
 }));
 
-// ✅ Static files
+// ✅ Static file
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // ✅ Body & Cookie parser
