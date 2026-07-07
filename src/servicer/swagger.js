@@ -6,7 +6,7 @@ const doc = {
     title: 'LMSBackend',              // by default: 'REST API'
     description: 'LMS Backend Releated all APIs'         // by default: ''
   },
-  host: 'https://lms-frontend-ten-steel.vercel.app',                 // by default: 'localhost:3000'
+  host: 'https://lms-harshdepani.vercel.app',                 // by default: 'localhost:3000'
   basePath: '/api/v2/',             // by default: '/'
   schemes: [],              // by default: ['http']
   consumes: [],             // by default: ['application/json']
@@ -44,7 +44,7 @@ const doc = {
   definitions: {}           // by default: empty object
 };
 
-const outputFile = '../../swagger-output.json';
+const outputFile = '../swagger-output.json';
 const routes = ['../routers/api/v2/index.js'];
 
 /* NOTE: If you are using the express Router, you must pass in the 'routes' only the 

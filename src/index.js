@@ -15,7 +15,7 @@ const swaggerDocument = require('./swagger-output.json');
 
 // ✅ CORS
 app.use(cors({
-    origin: 'https://lms-frontend-ten-steel.vercel.app',
+    origin: 'https://lms-harshdepani.vercel.app',
     // origin: "http://localhost:5173",
     optionsSuccessStatus: 200,
     credentials: true

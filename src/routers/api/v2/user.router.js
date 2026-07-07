@@ -48,7 +48,7 @@ routers.get('/auth/google/callback',
       .cookie("accessToken", accessToken, accOPNT)
       .cookie("refereshtoken", refreshToken, refOPNT)
       .status(200)
-      .redirect("https://lms-frontend-ten-steel.vercel.app")
+      .redirect("https://lms-harshdepani.vercel.app")
   });
 
 
@@ -82,7 +82,7 @@ routers.get('/auth/facebook/callback',
       .cookie("accessToken", accessToken, accOPNT)
       .cookie("refereshtoken", refreshToken, refOPNT)
       .status(200)
-      .redirect("https://lms-frontend-ten-steel.vercel.app")
+      .redirect("https://lms-harshdepani.vercel.app")
   });
 
 
